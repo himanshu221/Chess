@@ -19,4 +19,7 @@ export class Game {
     getId() {
         return this.id
     }
+    makeMove(user: User, move: string){
+        // validate the move
+    }
 }
