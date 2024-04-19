@@ -4,7 +4,6 @@ import { INIT_GAME, MOVE } from "./messages";
 import { Game } from "./Game";
 
 export class GameManager {
-    private gameCount: number
     private games: Game[];
     private users: User[]
     private pendingUser: User | null
@@ -12,7 +11,6 @@ export class GameManager {
         this.games = []
         this.users = []
         this.pendingUser = null
-        this.gameCount = 0;
     }
     getUser(socket: WebSocket){
         const user =  this.users.find(user => user.socket === socket)
@@ -23,7 +21,8 @@ export class GameManager {
     addUser(socket: WebSocket){
         this.users.push({
             socket,
-            gameId: null
+            gameId: null,
+            color: ''
         })
         this.addHandler(socket)
     }
@@ -34,7 +33,7 @@ export class GameManager {
     }
 
     private addHandler(socket: WebSocket){
-        // can use gRPC here, see what is gRPC and how we can use it here
+        // TODO: can use gRPC here, see what is gRPC and how we can use it here
         socket.on('message', (data) => {
             const message = JSON.parse(data.toString())
             const user = this.getUser(socket)
@@ -42,16 +41,22 @@ export class GameManager {
                 if(message.type == INIT_GAME){
                     if(this.pendingUser){
                         // Start the game
-                        const newGameId = this.gameCount++
+                        const newGameId = this.games.length + 1
                         const game = new Game(newGameId, this.pendingUser,user)
-                        this.pendingUser.gameId = newGameId
-                        user.gameId = newGameId
                         this.games.push(game)
+                        const firstUser = this.getUser(this.pendingUser.socket)
+                        if(firstUser){
+                            firstUser.gameId = newGameId
+                            firstUser.color = "w"
+                        }
+                        user.gameId = newGameId
+                        user.color = "b"
                         this.pendingUser = null
                     }else{
                         this.pendingUser = {
                             socket,
-                            gameId: null
+                            gameId: null,
+                            color: ""
                         }
                     }
                 }
