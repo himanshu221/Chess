@@ -8,6 +8,7 @@ export default {
     extend: {
       backgroundImage: {
         'chessboard': "url('chessboard.jpeg')",
+        'backboard' : "url('bg-board.jpeg')"
       }
     },
   },
