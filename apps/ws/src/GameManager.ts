@@ -1,6 +1,6 @@
 import WebSocket from "ws";
 import { User } from "./User";
-import { INIT_GAME, MOVE } from "./messages";
+import { INIT_GAME, MOVE } from "@chess/commons/consts";
 import { Game } from "./Game";
 
 export class GameManager {

@@ -1,6 +1,6 @@
 import { Chess } from "chess.js";
 import { User } from "./User";
-import { INVALID_MOVE, TURN } from "./messages";
+import { INVALID_MOVE, TURN} from "@chess/commons/consts"
 
 export class Game {
     private id: number

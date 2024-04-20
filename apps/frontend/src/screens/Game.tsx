@@ -1,10 +1,19 @@
 import { useState } from "react"
 import { Chessboard } from "react-chessboard"
+import { useSocket } from "../hooks/socket"
+import { INIT_GAME } from "@chess/commons/consts"
+
 export const Game = () => {
+    const socket = useSocket()
     const [startGame, setStartGame] = useState<boolean>(false)
 
-    function handleClick() {
-        setStartGame(true)
+    function startGameHandler() {
+        if(socket){
+            socket.send(JSON.stringify({
+                type: INIT_GAME
+            }))
+            setStartGame(true)
+        }
     }
 
     return <div className="bg-backboard p-5 h-screen flex justify-center overflow-auto">
@@ -27,7 +36,7 @@ export const Game = () => {
                     </div>
                     :
                     <div className="flex justify-center items-center">
-                        <button onClick={handleClick} type="button" className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2">
+                        <button onClick={startGameHandler} type="button" className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2">
                             Start Game
                         </button>
                     </div>
