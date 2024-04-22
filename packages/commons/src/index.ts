@@ -1,4 +1,28 @@
+import { Chess } from "chess.js"
+import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
 export const INIT_GAME = "init_game"
 export const MOVE = "move"
 export const INVALID_MOVE = "invalid_move"
-export const TURN = "Your turn"
+export const STARTED = "started"
+export const WHITE = "white"
+export const BLACK = "black"
+
+export interface MessageType {
+    type: string,
+    payload : null | Move
+}
+
+export interface Move {
+    from: string,
+    to: string
+    color: BoardOrientation
+}
+
+export interface ChessBoardProps {
+    socket: WebSocket | null,
+    game: Chess, 
+    setGame: React.Dispatch<React.SetStateAction<Chess>>,
+    board: string, 
+    setBoard:  React.Dispatch<React.SetStateAction<string>>,
+    playerColor: BoardOrientation
+}

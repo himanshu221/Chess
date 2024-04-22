@@ -1,11 +1,16 @@
-import { useState } from "react"
-import { Chessboard } from "react-chessboard"
+import { useEffect, useState } from "react"
 import { useSocket } from "../hooks/socket"
-import { INIT_GAME } from "@chess/commons/consts"
+import { INIT_GAME, MOVE, MessageType, STARTED } from "@chess/commons/consts"
+import { ChessBoard } from "../ChessBoard"
+import { Chess } from "chess.js"
+import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
 
 export const Game = () => {
     const socket = useSocket()
     const [startGame, setStartGame] = useState<boolean>(false)
+    const [game, setGame] = useState<Chess>(new Chess())
+    const [board, setBoard] = useState<string>(game.fen())
+    const [playerColor, setPlayerColor] = useState<BoardOrientation>("white")
 
     function startGameHandler() {
         if(socket){
@@ -16,10 +21,39 @@ export const Game = () => {
         }
     }
 
+    useEffect(() => {
+        if(!socket)
+            return
+        socket.onmessage = (event) => {
+            const message : MessageType = JSON.parse(event.data)
+            switch(message.type) {
+                case STARTED:
+                    console.log("game initialised")
+                    if(message.payload){
+                        setPlayerColor(message.payload.color)
+                    }
+                    break;
+                
+                case MOVE:
+                    console.log("a move was made")
+                    if(message.payload){
+                        game.move({
+                            from: message.payload.from,
+                            to: message.payload.to
+                        })
+                        setGame(game)
+                        setBoard(game.fen())
+                    }
+                    break;
+            }
+        }   
+
+        }, [socket])
+
     return <div className="bg-backboard p-5 h-screen flex justify-center overflow-auto">
         <div className="h-auto w-[95%] p-10 md:w-[82%] backdrop-blur-sm backdrop-saturate-150 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-0 overflow-auto">
             <div className="col-span-1 md:col-span-2 flex justify-center items-center">
-                <Chessboard position={'start'} boardWidth={580} customBoardStyle={{borderRadius: '5px', boxShadow: '0 0 50px rgba(0, 0, 0, 0.9'}} />
+                <ChessBoard socket={socket} game={game} setBoard={setBoard} setGame={setGame} board={board} playerColor={playerColor} />
             </div>
                 {startGame ? 
                     <div className="col-span-1 md:col-span-1 overflow-y-scroll border-white border flex justify-center rounded-md min-h-20">

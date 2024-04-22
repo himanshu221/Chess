@@ -63,7 +63,7 @@ export class GameManager {
                 else if(message.type == MOVE){
                     const game = this.games.find(game => game.getId() === user.gameId)
                     if(game){
-                        game.makeMove(user, message.move)
+                        game.makeMove(user, message.payload)
                     }
                 }
             }

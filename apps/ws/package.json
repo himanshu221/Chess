@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev" : "nodemon dist/index.js",
+    "dev" : "esbuild src/index.ts --platform=node --bundle --outdir=dist && nodemon dist/index.js",
     "build": "esbuild src/index.ts --platform=node --bundle --outdir=dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

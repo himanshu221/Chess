@@ -1,6 +1,6 @@
-import { Chess } from "chess.js";
+import {Chess } from "chess.js";
 import { User } from "./User";
-import { INVALID_MOVE, TURN} from "@chess/commons/consts"
+import { BLACK, INVALID_MOVE, MOVE, Move, STARTED, WHITE} from "@chess/commons/consts"
 
 export class Game {
     private id: number
@@ -17,15 +17,15 @@ export class Game {
         this.startTime  = new Date()
 
         player1.socket.send(JSON.stringify({
-            message: "game started",
-            playload: {
-                color: "w"
+            type: STARTED,
+            payload: {
+                color: WHITE
             }
         }))
         player2.socket.send(JSON.stringify({
-            message: "game started",
-            playload: {
-                color: "b"
+            type: STARTED,
+            payload: {
+                color: BLACK
             }
         }))
     }
@@ -37,31 +37,31 @@ export class Game {
             return this.player1
         else return this.player2
     }
-    makeMove(user: User, move: {
-        from: string,
-        to: string
-    }){
+    makeMove(user: User, move: Move){
         // validate the turn
         if(this.board.turn() !== user.color){
             return;
         }
         // validate the move
         try{
-            this.board.move(move)
+            this.board.move({
+                from: move.from,
+                to: move.to
+            })
         }catch(e){
             console.log(e)
             user.socket.send(JSON.stringify({
-                message: INVALID_MOVE
+                type: INVALID_MOVE
             }))
             return
         }
 
         if(this.board.isGameOver()){
             this.player1.socket.send(JSON.stringify({
-                message: `${this.board.turn} won`
+                type: `${this.board.turn} won`
             }))
             this.player2.socket.send(JSON.stringify({
-                message: `${this.board.turn} won`
+                type: `${this.board.turn} won`
             }))
             return
         }
@@ -69,7 +69,7 @@ export class Game {
         const opponent = this.getOpponent(user)
 
         opponent.socket.send(JSON.stringify({
-            message: TURN,
+            type: MOVE,
             payload: move
         }))
     }
