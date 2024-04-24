@@ -3,7 +3,7 @@ import { ChessBoardProps, MOVE } from "@chess/commons/consts";
 import { Chessboard } from "react-chessboard"
 import { Square } from "react-chessboard/dist/chessboard/types"
 
-export const ChessBoard  = ({socket, game, setGame,  board, setBoard, playerColor} : ChessBoardProps) => {
+export const ChessBoard  = ({socket, game ,gameStart,  setGame,  board, setBoard, playerColor} : ChessBoardProps) => {
     
     function onDropHandler(sourceSquare: Square, targetSquare: Square){
         if(game.turn() !== playerColor.charAt(0)){
@@ -36,6 +36,7 @@ export const ChessBoard  = ({socket, game, setGame,  board, setBoard, playerColo
     }
     
     return <Chessboard 
+                arePiecesDraggable={gameStart}
                 position={board} 
                 boardOrientation={playerColor}
                 boardWidth={580} 

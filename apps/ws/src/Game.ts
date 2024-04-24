@@ -1,6 +1,6 @@
 import {Chess } from "chess.js";
 import { User } from "./User";
-import { BLACK, INVALID_MOVE, MOVE, Move, STARTED, WHITE} from "@chess/commons/consts"
+import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, Move, STARTED, WHITE} from "@chess/commons/consts"
 
 export class Game {
     private id: number
@@ -56,21 +56,28 @@ export class Game {
             return
         }
 
-        if(this.board.isGameOver()){
-            this.player1.socket.send(JSON.stringify({
-                type: `${this.board.turn} won`
-            }))
-            this.player2.socket.send(JSON.stringify({
-                type: `${this.board.turn} won`
-            }))
-            return
-        }
-
         const opponent = this.getOpponent(user)
 
         opponent.socket.send(JSON.stringify({
             type: MOVE,
             payload: move
         }))
+
+        if(this.board.isGameOver()){
+            const playerColor = this.board.turn() == 'w' ? "black" : "white";
+            this.player1.socket.send(JSON.stringify({
+                type: GAME_OVER,
+                payload: {
+                    message: `${playerColor}` 
+                }
+            }))
+            this.player2.socket.send(JSON.stringify({
+                type: GAME_OVER,
+                payload: {
+                    message: `${playerColor}` 
+                }
+            }))
+            return
+        }
     }
 }

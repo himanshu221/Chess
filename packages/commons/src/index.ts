@@ -6,6 +6,7 @@ export const INVALID_MOVE = "invalid_move"
 export const STARTED = "started"
 export const WHITE = "white"
 export const BLACK = "black"
+export const GAME_OVER = "game_over"
 
 export interface MessageType {
     type: string,
@@ -13,13 +14,15 @@ export interface MessageType {
 }
 
 export interface Move {
-    from: string,
+    from: string
     to: string
     color: BoardOrientation
+    message: string
 }
 
 export interface ChessBoardProps {
     socket: WebSocket | null,
+    gameStart: boolean
     game: Chess, 
     setGame: React.Dispatch<React.SetStateAction<Chess>>,
     board: string, 
