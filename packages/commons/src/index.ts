@@ -22,6 +22,8 @@ export interface Move {
 
 export interface ChessBoardProps {
     socket: WebSocket | null,
+    moves: string[],
+    setMoves: React.Dispatch<React.SetStateAction<string[]>>,
     gameStart: boolean
     game: Chess, 
     setGame: React.Dispatch<React.SetStateAction<Chess>>,

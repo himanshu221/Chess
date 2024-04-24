@@ -13,6 +13,7 @@ export const Game = () => {
     const [game, setGame] = useState<Chess>(new Chess())
     const [board, setBoard] = useState<string>(game.fen())
     const [playerColor, setPlayerColor] = useState<BoardOrientation>("white")
+    const [moves, setMoves] = useState<string[]>([])
 
     function startGameHandler() {
         if(socket){
@@ -44,6 +45,7 @@ export const Game = () => {
                         })
                         setGame(game)
                         setBoard(game.fen())
+                        setMoves([...moves, message.payload.to])
                     }
                     break;
                 case GAME_OVER:
@@ -61,18 +63,29 @@ export const Game = () => {
     return <div className="bg-backboard p-5 h-screen flex justify-center overflow-auto">
         <div className="h-auto w-[95%] p-10 md:w-[82%] backdrop-blur-sm backdrop-saturate-150 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-0 overflow-auto">
             <div className="col-span-1 md:col-span-2 flex justify-center items-center">
-                <ChessBoard socket={socket} gameStart={startGame} game={game} setBoard={setBoard} setGame={setGame} board={board} playerColor={playerColor} />
+                <ChessBoard socket={socket} moves={moves} setMoves={setMoves} gameStart={startGame} game={game} setBoard={setBoard} setGame={setGame} board={board} playerColor={playerColor} />
             </div>
                 {!buttonExist ? 
-                    <div className="col-span-1 md:col-span-1 overflow-y-scroll border-white border flex justify-center rounded-md min-h-20">
+                    <div className="col-span-1 md:col-span-1 overflow-y-scroll border-slate-300 border flex justify-center rounded-md min-h-20">
                         <table className="table-fixed w-[100%]">
-                            <thead className="bg-slate-200 w-[100%] top-0 sticky">
+                            <thead className="bg-slate-300 h-12 w-[100%] top-0 sticky">
                                 <tr>
-                                    <th>From</th>
-                                    <th>To</th>
+                                    <th>Moves</th>
                                 </tr>
                             </thead>
                             <tbody>
+                               {
+                                     moves.map((_, ind) => {
+                                        return ind%2 == 0 ? 
+                                            <tr key={ind}>
+                                                <td>{moves[ind]}</td>
+                                                <td>{moves[ind+1]}</td>
+                                            </tr>
+                                            : null
+                                    })
+
+
+                                }
                             </tbody>
                         </table>
                     </div>
