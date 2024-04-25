@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react"
 import { useSocket } from "../hooks/socket"
 import { GAME_OVER, INIT_GAME, MOVE, MessageType, STARTED } from "@chess/commons/consts"
-import { ChessBoard } from "../ChessBoard"
+import { ChessBoard } from "../components/ChessBoard"
 import { Chess } from "chess.js"
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
 import toast, { Toaster } from "react-hot-toast"
+import { MoveTable } from "../components/MoveTable"
+import { Button } from "@chess/ui/button"
 
 export const Game = () => {
     const socket = useSocket()
@@ -67,25 +69,11 @@ export const Game = () => {
             <div className="col-span-1 md:col-span-2 flex justify-center items-center">
                 <ChessBoard socket={socket} moves={moves} setMoves={setMoves} gameStart={startGame} game={game} setBoard={setBoard} setGame={setGame} board={board} playerColor={playerColor} />
             </div>
-            {!buttonExist ? 
-                <div className="col-span-1 md:col-span-1 overflow-y-scroll border-slate-300 border rounded-md min-h-20">
-                        <div className="bg-slate-300 h-12 w-[100%] top-0 col-span-2 flex justify-center items-center sticky font-bold text-xl">
-                            Moves
-                        </div>
-                        <div className="grid grid-cols-2">
-                            {
-                                moves.map((move, ind) => 
-                                    <div key={ind} className="col-span-1 text-lg text-white flex justify-center items-center h-12">
-                                        {move}
-                                    </div>)
-                            }
-                        </div>
-                </div>
-                :
+            {!buttonExist ? <MoveTable moves={moves} /> : 
                 <div className="flex justify-center items-center">
-                    <button onClick={startGameHandler} type="button" className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2">
+                    <Button onClickHandler={startGameHandler} className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2">
                         Start Game
-                    </button>
+                    </ Button>
                 </div>
             }
         </div>
