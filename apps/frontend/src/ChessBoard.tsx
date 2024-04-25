@@ -12,12 +12,14 @@ export const ChessBoard  = ({socket, moves, setMoves, game ,gameStart,  setGame,
         try{
             game.move({
                 from: sourceSquare,
-                to: targetSquare
+                to: targetSquare,
+                promotion: 'q'
             })
             if(socket){
                 setGame(game)
                 setBoard(game.fen())
-                setMoves([...moves, targetSquare])
+                moves.push(targetSquare)
+                setMoves(moves)
                 socket.send(JSON.stringify({
                     type: MOVE,
                     payload: {

@@ -10,7 +10,7 @@ export const GAME_OVER = "game_over"
 
 export interface MessageType {
     type: string,
-    payload : null | Move
+    payload : null | Move,
 }
 
 export interface Move {

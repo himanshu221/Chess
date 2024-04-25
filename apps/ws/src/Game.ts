@@ -46,7 +46,8 @@ export class Game {
         try{
             this.board.move({
                 from: move.from,
-                to: move.to
+                to: move.to,
+                promotion: 'q'
             })
         }catch(e){
             console.log(e)
