@@ -22,7 +22,9 @@
     "packages/*"
   ],
   "dependencies": {
+    "@types/passport-google-oauth20": "^2.0.14",
     "esbuild": "^0.20.2",
+    "passport-google-oauth20": "^2.0.0",
     "react-hot-toast": "^2.4.1"
   }
 }

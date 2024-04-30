@@ -1,0 +1,16 @@
+{
+  "name": "@chess/backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/passport-google-oauth20": "^2.0.14",
+    "passport-google-oauth20": "^2.0.0"
+  }
+}

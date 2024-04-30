@@ -1,6 +1,6 @@
 export const MoveTable = ({moves} : {moves: string[]}) => {
     let count = 1;
-    return <div className="col-span-1 md:col-span-1 overflow-y-scroll backdrop-blur-none border-[#25150c] border-4 rounded-md min-h-20">
+    return <div className="col-span-1 md:col-span-1 overflow-y-scroll backdrop-blur-none border-[#25150c] border-4 rounded-md min-h-48">
         <div className="bg-[#25150c] h-12 w-[100%] top-0 col-span-2 flex justify-center items-center sticky font-bold text-xl text-white">
             Moves
         </div>
