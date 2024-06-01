@@ -4,6 +4,7 @@ import dotEnv from 'dotenv'
 import session from 'express-session'
 import passport from 'passport'
 import { AuthRouter } from './routes/AuthRouter'
+import { initPassport } from './passport'
 dotEnv.config()
 
 const app = express()
@@ -17,6 +18,8 @@ app.use(session({
     }
 }
 ))
+
+initPassport()
 
 app.use(passport.session());
 
