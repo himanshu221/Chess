@@ -8,7 +8,7 @@ export const initPassport = () => {
         clientID: process.env.GOOGLE_CLIENT_ID || 'GOOGLE_CLIENT_ID',
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || 'GOOGLE_CLIENT_SECRET',
         callbackURL: "/auth/google/callback",
-        scope: ['profile']
+        scope: ['profile', 'email']
       },
       async function verfiy(accessToken, refreshToken, profile, done){
             
@@ -16,7 +16,7 @@ export const initPassport = () => {
                 create : {
                     id: profile.id, 
                     name: profile.displayName,
-                    email: profile._json.email || '',
+                    email: profile.emails[0].value,
                     provider: 'GOOGLE'
                 },
                 update: {
