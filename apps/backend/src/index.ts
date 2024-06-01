@@ -1,11 +1,10 @@
 import prisma from '@chess/db/client'
 import express from 'express'
-import dotEnv from 'dotenv'
 import session from 'express-session'
 import passport from 'passport'
 import { AuthRouter } from './routes/AuthRouter'
 import { initPassport } from './passport'
-dotEnv.config()
+import 'dotenv/config'
 
 const app = express()
 
@@ -25,8 +24,8 @@ app.use(passport.session());
 
 app.use('/auth', AuthRouter);
 
-const PORT = process.env.PORT || 3000
-
+const PORT = process.env.PORT || 400
+console.log(PORT)
 app.listen(PORT, () => {
     console.log(`Server is listening at port ${PORT}`)
 })
