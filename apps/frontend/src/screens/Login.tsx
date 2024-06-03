@@ -1,10 +1,11 @@
+import { BACKEND_URL } from "@chess/commons/consts";
 import { Button } from "@chess/ui/button"
 
 export const Login = () => {
-    const BACKEND_URL='http://localhost:3000'
+
 
     function handleClick() {
-        window.open(`${BACKEND_URL}/auth/google`, '_self')
+        window.location.href = `${BACKEND_URL}/auth/google`;
     }
 
     return <div className="h-screen bg-cover bg-chessboard flex justify-center items-center">
@@ -13,7 +14,7 @@ export const Login = () => {
                 Play Chess Online on the #1 Site!
             </div>
             <div className="p-10">
-            <Button onClickHandler={handleClick} className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2">
+            <Button onClickHandler={handleClick} disabled={false} className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2">
                 Login with Google
             </ Button>
             </div>

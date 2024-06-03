@@ -7,6 +7,7 @@ export const STARTED = "started"
 export const WHITE = "white"
 export const BLACK = "black"
 export const GAME_OVER = "game_over"
+export const BACKEND_URL = "http://localhost:3000"
 
 export interface MessageType {
     type: string,
@@ -17,7 +18,8 @@ export interface Move {
     from: string
     to: string
     color: BoardOrientation
-    message: string
+    message: string,
+    gameId: string
 }
 
 export interface ChessBoardProps {

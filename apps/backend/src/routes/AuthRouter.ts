@@ -9,7 +9,7 @@ router.get('/google', passport.authenticate('google'));
 
 router.get('/google/callback', passport.authenticate('google',{
     failureRedirect: '/login/failure',
-    successRedirect: `${CLIENT_URL}/game`
+    successRedirect: `${CLIENT_URL}/game/random`
 }))
 
 router.get('/refresh', async (req, resp) => {

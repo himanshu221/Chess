@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev" : "esbuild src/index.ts --platform=node --bundle --outdir=dist && nodemon dist/index.js",
+    "dev": "esbuild src/index.ts --platform=node --bundle --outdir=dist && nodemon dist/index.js",
     "build": "esbuild src/index.ts --platform=node --bundle --outdir=dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -12,10 +12,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@chess/ui": "*",
     "@chess/commons": "*",
+    "@chess/ui": "*",
     "@types/ws": "^8.5.10",
     "chess.js": "^1.0.0-beta.8",
+    "crypto": "^1.0.1",
     "esbuild": "^0.20.2",
     "nodemon": "^3.1.0",
     "ws": "^8.16.0"

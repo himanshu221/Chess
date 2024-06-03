@@ -2,15 +2,24 @@ import WebSocket from "ws";
 import { User } from "./User";
 import { INIT_GAME, MOVE } from "@chess/commons/consts";
 import { Game } from "./Game";
+import { randomUUID } from "crypto";
 
 export class GameManager {
+    private static instance: GameManager;
     private games: Game[];
     private users: User[]
     private pendingUser: User | null
-    constructor() {
+    private constructor() {
         this.games = []
         this.users = []
         this.pendingUser = null
+    }
+
+    static getInstance() {
+        if(!this.instance){
+            this.instance = new GameManager()
+        }
+        return this.instance
     }
     getUser(socket: WebSocket){
         const user =  this.users.find(user => user.socket === socket)
@@ -41,7 +50,7 @@ export class GameManager {
                 if(message.type == INIT_GAME){
                     if(this.pendingUser){
                         // Start the game
-                        const newGameId = this.games.length + 1
+                        const newGameId = randomUUID()
                         const game = new Game(newGameId, this.pendingUser,user)
                         this.games.push(game)
                         const firstUser = this.getUser(this.pendingUser.socket)

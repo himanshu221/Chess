@@ -1,15 +1,16 @@
 import {Chess } from "chess.js";
 import { User } from "./User";
 import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, Move, STARTED, WHITE} from "@chess/commons/consts"
+import { UUID } from "crypto";
 
 export class Game {
-    private id: number
+    private id: UUID
     private player1: User;
     private player2: User;
     private board: Chess
     private startTime: Date
 
-    constructor(id: number, player1: User, player2: User){
+    constructor(id: UUID, player1: User, player2: User){
         this.id = id
         this.player1 = player1
         this.player2 = player2
@@ -19,13 +20,15 @@ export class Game {
         player1.socket.send(JSON.stringify({
             type: STARTED,
             payload: {
-                color: WHITE
+                color: WHITE,
+                gameId: this.getId()
             }
         }))
         player2.socket.send(JSON.stringify({
             type: STARTED,
             payload: {
-                color: BLACK
+                color: BLACK,
+                gameId: this.getId()
             }
         }))
     }

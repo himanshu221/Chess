@@ -10,7 +10,7 @@ export const initPassport = () => {
         scope: ['profile', 'email']
       },
       async function verfiy(accessToken, refreshToken, profile: any, done){
-            console.log(profile)
+            
             const user = await prisma.user.upsert({
                 create : {
                     id: profile.id, 

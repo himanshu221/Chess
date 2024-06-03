@@ -4,11 +4,16 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  variants: {
+    extend: {
+      backgroundColor: ['disabled'],
+    }
+  },
   theme: {
     extend: {
       backgroundImage: {
-        'chessboard': "url('chessboard.jpeg')",
-        'backboard' : "url('bg-board.jpeg')"
+        'chessboard': "url('/chessboard.jpeg')",
+        'backboard' : "url('/woodboard.jpeg')"
       }
     },
   },
