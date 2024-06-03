@@ -31,3 +31,12 @@ export interface ChessBoardProps {
     setBoard:  React.Dispatch<React.SetStateAction<string>>,
     playerColor: BoardOrientation
 }
+
+export interface UserSession {
+    id: string
+}
+
+export interface AuthUser{
+    id: string,
+    name: string
+}
