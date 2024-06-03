@@ -1,4 +1,3 @@
-import prisma from '@chess/db/client'
 import express from 'express'
 import session from 'express-session'
 import passport from 'passport'
@@ -24,8 +23,8 @@ app.use(passport.session());
 
 app.use('/auth', AuthRouter);
 
-const PORT = process.env.PORT || 400
-console.log(PORT)
+const PORT = process.env.PORT || 3000
+
 app.listen(PORT, () => {
     console.log(`Server is listening at port ${PORT}`)
 })
