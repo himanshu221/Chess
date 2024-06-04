@@ -29,6 +29,7 @@ export const Game = () => {
             setStartButtonClicked(true)
         }
     }
+    console.log(user)
     useEffect(() => {
         if(!user){
             navigate('/login')

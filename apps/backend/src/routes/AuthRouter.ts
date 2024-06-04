@@ -13,9 +13,10 @@ router.get('/google/callback', passport.authenticate('google',{
 }))
 
 router.get('/refresh', async (req, resp) => {
+
     if(req.isAuthenticated()){
         const user = req.user as UserSession
-        
+ 
         try{
             const userDb = await prisma.user.findFirst({
                 where: {
@@ -27,7 +28,7 @@ router.get('/refresh', async (req, resp) => {
                     id: userDb.id,
                     name: userDb.username
                 }
-                resp.json(userResp)
+                return resp.json(userResp)
             }
             return resp.status(401).json({
                 success: false,
@@ -43,6 +44,10 @@ router.get('/refresh', async (req, resp) => {
             message: "User not found in database"
         })
     }
+    return resp.status(401).json({
+        success: false,
+        message: "User not found in database"
+    })
 })
 router.get('/login/failure', (req, resp) => {
     resp.status(401).json({

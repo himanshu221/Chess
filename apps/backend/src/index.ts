@@ -3,9 +3,12 @@ import session from 'express-session'
 import passport from 'passport'
 import { AuthRouter } from './routes/AuthRouter'
 import { initPassport } from './passport'
+import cors from 'cors'
 import 'dotenv/config'
 
 const app = express()
+app.use(express.json())
+
 
 app.use(session({
     secret: process.env.SECRET || 'keyboard cat',
@@ -20,6 +23,13 @@ app.use(session({
 initPassport()
 
 app.use(passport.session());
+
+const allowedOrigins : Array<string> = process.env.CORS_ALLOWED_ORIGINS?.split(",") || ['http://localhost:5173']
+
+app.use(cors({
+    origin: allowedOrigins, 
+    credentials:true
+}))
 
 app.use('/auth', AuthRouter);
 

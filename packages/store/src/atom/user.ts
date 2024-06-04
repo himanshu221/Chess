@@ -1,5 +1,5 @@
 import {atom, selector} from 'recoil'
-import axios from 'axios'
+import axios, { get } from 'axios'
 import { AuthUser, BACKEND_URL } from '@chess/commons/consts'
 
 
@@ -8,8 +8,11 @@ export const userAtom = atom({
     default: selector({
         key: 'userAtomSelector',
         get: async () => {
+            console.log("inside atom selector")
             try{
-                const resp = await axios.get(`${BACKEND_URL}/auth/refresh`);
+                const resp = await axios.get(`${BACKEND_URL}/auth/refresh`,{
+                    withCredentials: true
+                });
                 console.log(resp)
                 if(resp.status === 200){
                     const userInfo : AuthUser = resp.data

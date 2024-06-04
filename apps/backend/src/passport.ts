@@ -42,7 +42,7 @@ export const initPassport = () => {
     // it is used to get the user information from db if the user is present in session already
     // and add the user detials to req.user
     passport.deserializeUser(async (user: any, done) => {
-        const usr = prisma.user.findFirst({
+        const usr = await prisma.user.findFirst({
             where: {
                 id: user.id
             }
