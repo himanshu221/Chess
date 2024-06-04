@@ -17,6 +17,8 @@ export class Game {
         this.board = new Chess()
         this.startTime  = new Date()
 
+        
+
         player1.socket.send(JSON.stringify({
             type: STARTED,
             payload: {
