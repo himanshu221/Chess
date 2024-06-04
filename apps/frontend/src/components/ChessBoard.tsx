@@ -41,13 +41,11 @@ export const ChessBoard  = ({socket, moves, setMoves, game ,gameStart,  setGame,
                 arePiecesDraggable={gameStart}
                 position={board} 
                 boardOrientation={playerColor}
-                boardWidth={580} 
                 snapToCursor={true}
                 onPieceDrop={onDropHandler}
                 customBoardStyle={
                     {
-                        borderRadius: '5px',
-                        boxShadow: '0 0 50px rgba(0, 0, 0, 0.9'
+                        borderRadius: '5px'
                     }} 
             />
 }

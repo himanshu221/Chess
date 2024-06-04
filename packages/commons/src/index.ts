@@ -19,7 +19,8 @@ export interface Move {
     to: string
     color: BoardOrientation
     message: string,
-    gameId: string
+    gameId: string,
+    opponentName: string
 }
 
 export interface ChessBoardProps {

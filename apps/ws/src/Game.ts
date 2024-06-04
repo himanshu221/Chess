@@ -21,14 +21,16 @@ export class Game {
             type: STARTED,
             payload: {
                 color: WHITE,
-                gameId: this.getId()
+                gameId: this.getId(),
+                opponentName: player2.name
             }
         }))
         player2.socket.send(JSON.stringify({
             type: STARTED,
             payload: {
                 color: BLACK,
-                gameId: this.getId()
+                gameId: this.getId(),
+                opponentName: player1.name
             }
         }))
     }

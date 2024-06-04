@@ -4,5 +4,6 @@ import { WebSocket } from "ws";
 export interface User{
     socket: WebSocket
     gameId: UUID | null
-    color: string
+    color: string,
+    name: string
 }

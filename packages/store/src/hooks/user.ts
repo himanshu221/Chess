@@ -1,9 +1,9 @@
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useRecoilValueLoadable } from "recoil";
 import { userAtom } from "../atom/user";
 import { AuthUser } from "@chess/commons/consts";
 
 
 export function useUser() {
-    const user = useRecoilValue<AuthUser | null>(userAtom)
+    const user = useRecoilValueLoadable<AuthUser | null>(userAtom)
     return user
 }

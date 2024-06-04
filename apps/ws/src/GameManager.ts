@@ -31,7 +31,8 @@ export class GameManager {
         this.users.push({
             socket,
             gameId: null,
-            color: ''
+            color: '',
+            name: ''
         })
         this.addHandler(socket)
     }
@@ -48,9 +49,13 @@ export class GameManager {
             const user = this.getUser(socket)
             if(user){
                 if(message.type == INIT_GAME){
+                    
                     if(this.pendingUser){
                         // Start the game
                         const newGameId = randomUUID()
+                        user.name = message.payload.name
+                        user.gameId = newGameId
+                        user.color = "b"
                         const game = new Game(newGameId, this.pendingUser,user)
                         this.games.push(game)
                         const firstUser = this.getUser(this.pendingUser.socket)
@@ -58,14 +63,13 @@ export class GameManager {
                             firstUser.gameId = newGameId
                             firstUser.color = "w"
                         }
-                        user.gameId = newGameId
-                        user.color = "b"
                         this.pendingUser = null
                     }else{
                         this.pendingUser = {
                             socket,
                             gameId: null,
-                            color: ""
+                            color: "",
+                            name: message.payload.name
                         }
                     }
                 }
