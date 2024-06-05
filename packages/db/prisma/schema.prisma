@@ -33,8 +33,8 @@ model game {
   result        GameResult?
   currentState  String @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
   createdAt     DateTime @default(now())
-  endedAt       DateTime
-  moves         move[] 
+  endedAt       DateTime?
+  moves         move[]
 }
 
 model move {

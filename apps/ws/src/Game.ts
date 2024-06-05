@@ -2,6 +2,7 @@ import {Chess } from "chess.js";
 import { User } from "./User";
 import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, Move, STARTED, WHITE} from "@chess/commons/consts"
 import { UUID } from "crypto";
+import { saveGameToDB } from "./store/db";
 
 export class Game {
     private id: UUID
@@ -17,7 +18,7 @@ export class Game {
         this.board = new Chess()
         this.startTime  = new Date()
 
-        
+
 
         player1.socket.send(JSON.stringify({
             type: STARTED,
@@ -35,6 +36,10 @@ export class Game {
                 opponentName: player1.name
             }
         }))
+
+        try{
+            saveGameToDB(id, player1 )
+        }
     }
     getId() {
         return this.id
