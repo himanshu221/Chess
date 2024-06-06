@@ -8,12 +8,12 @@ export const userAtom = atom({
     default: selector({
         key: 'userAtomSelector',
         get: async () => {
-            console.log("inside atom selector")
+   
             try{
                 const resp = await axios.get(`${BACKEND_URL}/auth/refresh`,{
                     withCredentials: true
                 });
-                console.log(resp)
+               
                 if(resp.status === 200){
                     const userInfo : AuthUser = resp.data
                     return userInfo

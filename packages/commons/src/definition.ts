@@ -39,8 +39,9 @@ export interface AuthUser{
 }
 
 export interface User{
-    socket: WebSocket
-    gameId: UUID | null
-    color: string,
+    id: string,
+    socket:  WebSocket,
+    gameId? : UUID,
+    color? : string,
     name: string
 }

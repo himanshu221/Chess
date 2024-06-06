@@ -3,7 +3,8 @@ import { User } from '@chess/commons/definition'
 import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, STARTED, WHITE} from "@chess/commons/consts"
 import { Move } from '@chess/commons/definition'
 import { UUID } from "crypto";
-import { saveGameToDB } from "./store/db";
+import { saveGameToDB, saveMoveToDB } from "./store/db";
+import { GameManager } from "./GameManager";
 
 export class Game {
     private id: UUID
@@ -18,9 +19,7 @@ export class Game {
         this.player2 = player2
         this.board = new Chess()
         this.startTime  = new Date()
-
-
-
+        
         player1.socket.send(JSON.stringify({
             type: STARTED,
             payload: {
@@ -38,9 +37,8 @@ export class Game {
             }
         }))
 
-        // try{
-        //     saveGameToDB(id, player1, player2)
-        // }
+        saveGameToDB(id, player1.id, player2.id)
+
     }
     getId() {
         return this.id
@@ -76,6 +74,8 @@ export class Game {
             type: MOVE,
             payload: move
         }))
+        
+        saveMoveToDB(this.player1.gameId, move.to, move.from);
 
         if(this.board.isGameOver()){
             const playerColor = this.board.turn() == 'w' ? "black" : "white";
@@ -91,6 +91,12 @@ export class Game {
                     message: `${playerColor}` 
                 }
             }))
+            
+            GameManager.getInstance().removeGame(this.player1.gameId)
+            this.player1.color=""
+            this.player1.gameId= undefined
+            this.player2.color=""
+            this.player2.gameId= undefined
             return
         }
     }

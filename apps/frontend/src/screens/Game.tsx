@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSocket } from "../hooks/socket"
-import { GAME_OVER, INIT_GAME, MOVE, MessageType, STARTED } from "@chess/commons/consts"
+import { MessageType } from '@chess/commons/definition'
+import { GAME_OVER, INIT_GAME, MOVE, STARTED } from "@chess/commons/consts"
 import { ChessBoard } from "../components/ChessBoard"
 import { Chess } from "chess.js"
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
@@ -12,9 +13,9 @@ import { useNavigate } from "react-router-dom"
 import { useUser } from "@chess/store/user"
 
 export const Game = () => {
-    const socket = useSocket()
     const navigate = useNavigate()
     const user = useUser()
+    const socket = useSocket()
     const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false)
     const [opponentName, setOpponentName] = useState<string>("")
     const [startGame, setStartGame] = useState<boolean>(false)

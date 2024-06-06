@@ -2,14 +2,18 @@ import { AuthUser, UserSession } from '@chess/commons/definition';
 import prisma from '@chess/db/client';
 import express from 'express'
 import passport from 'passport'
+import jwt from 'jsonwebtoken'
+import { FRONTEND_URL } from '@chess/commons/consts';
+import cookieParser from 'cookie-parser';
+
 const router = express.Router()
-const CLIENT_URL='http://localhost:5173'
+const jwtSecret = process.env.JWT_SECRET || 'secret'
 
 router.get('/google', passport.authenticate('google'));
 
 router.get('/google/callback', passport.authenticate('google',{
     failureRedirect: '/login/failure',
-    successRedirect: `${CLIENT_URL}/game/random`
+    successRedirect: `${FRONTEND_URL}/game/random`
 }))
 
 router.get('/refresh', async (req, resp) => {
@@ -24,6 +28,12 @@ router.get('/refresh', async (req, resp) => {
                 }
             })
             if(userDb){
+                const token = jwt.sign({
+                    id: userDb.id,
+                    name: userDb.username
+                }, jwtSecret)
+                
+                resp.cookie('token', token)
                 const userResp : {success: boolean, payload: AuthUser} = {
                     success: true,
                     payload: {

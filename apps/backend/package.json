@@ -12,14 +12,18 @@
   "license": "ISC",
   "dependencies": {
     "@chess/commons": "*",
+    "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
     "@types/express-session": "^1.18.0",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/passport-google-oauth20": "^2.0.16",
+    "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "esbuild": "^0.21.4",
     "express": "^4.19.2",
     "express-session": "^1.18.0",
+    "jsonwebtoken": "^9.0.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0"
   }

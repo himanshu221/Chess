@@ -53,7 +53,7 @@ enum GameResult {
 }
 enum GameStatus {
   IN_PROGRESS
-  DRAW
+  ABANDONED
   ENDED
 }
 enum AuthProvider {

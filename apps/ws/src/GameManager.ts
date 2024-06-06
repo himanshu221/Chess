@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { User } from '@chess/commons/definition'
+import { AuthUser, User } from '@chess/commons/definition'
 import { INIT_GAME, MOVE } from "@chess/commons/consts";
 import { Game } from "./Game";
 import { randomUUID } from "crypto";
@@ -27,14 +27,18 @@ export class GameManager {
             return user;
         return null;
     }
-    addUser(socket: WebSocket){
-        this.users.push({
-            socket,
-            gameId: null,
-            color: '',
-            name: ''
-        })
-        this.addHandler(socket)
+    addUser(socket: WebSocket, newUser: AuthUser){
+        const user = this.users.find(user => user.id === newUser.id)
+        if(!user){
+            this.users.push({
+                id: newUser.id,
+                name: newUser.name,
+                socket,
+            })
+            this.addHandler(socket)
+        }else{
+            user.socket = socket
+        }
     }
 
     removeUser(socket: WebSocket){
@@ -53,24 +57,15 @@ export class GameManager {
                     if(this.pendingUser){
                         // Start the game
                         const newGameId = randomUUID()
-                        user.name = message.payload.name
                         user.gameId = newGameId
                         user.color = "b"
+                        this.pendingUser.gameId = newGameId
+                        this.pendingUser.color = "w"
                         const game = new Game(newGameId, this.pendingUser,user)
                         this.games.push(game)
-                        const firstUser = this.getUser(this.pendingUser.socket)
-                        if(firstUser){
-                            firstUser.gameId = newGameId
-                            firstUser.color = "w"
-                        }
                         this.pendingUser = null
                     }else{
-                        this.pendingUser = {
-                            socket,
-                            gameId: null,
-                            color: "",
-                            name: message.payload.name
-                        }
+                        this.pendingUser = user
                     }
                 }
                 else if(message.type == MOVE){
@@ -81,6 +76,13 @@ export class GameManager {
                 }
             }
         })
+    }
+
+    removeGame(gameId: string | undefined){
+        if(gameId){
+            this.games = this.games.filter(game => game.getId() !== gameId)
+        }
+        return
     }
 
 }
