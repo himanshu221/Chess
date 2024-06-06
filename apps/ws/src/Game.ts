@@ -1,6 +1,7 @@
 import {Chess } from "chess.js";
-import { User } from "./User";
-import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, Move, STARTED, WHITE} from "@chess/commons/consts"
+import { User } from '@chess/commons/definition'
+import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, STARTED, WHITE} from "@chess/commons/consts"
+import { Move } from '@chess/commons/definition'
 import { UUID } from "crypto";
 import { saveGameToDB } from "./store/db";
 
@@ -37,9 +38,9 @@ export class Game {
             }
         }))
 
-        try{
-            saveGameToDB(id, player1 )
-        }
+        // try{
+        //     saveGameToDB(id, player1, player2)
+        // }
     }
     getId() {
         return this.id

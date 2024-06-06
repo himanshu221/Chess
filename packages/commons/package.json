@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "exports": {
-    "./consts": "./src/index.ts"
+    "./consts": "./src/const.ts",
+    "./definition": "./src/definition.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -14,6 +15,8 @@
   "license": "ISC",
   "dependencies": {
     "@types/chess.js": "^0.13.7",
-    "chess.js": "^1.0.0-beta.8"
+    "chess.js": "^1.0.0-beta.8",
+    "crypto": "^1.0.1",
+    "ws": "^8.16.0"
   }
 }

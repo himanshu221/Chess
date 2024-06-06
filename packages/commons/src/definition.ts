@@ -1,13 +1,7 @@
+import { UUID } from "crypto";
 import { Chess } from "chess.js"
+import { WebSocket } from "ws";
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
-export const INIT_GAME = "init_game"
-export const MOVE = "move"
-export const INVALID_MOVE = "invalid_move"
-export const STARTED = "started"
-export const WHITE = "white"
-export const BLACK = "black"
-export const GAME_OVER = "game_over"
-export const BACKEND_URL = "http://localhost:3000"
 
 export interface MessageType {
     type: string,
@@ -41,5 +35,12 @@ export interface UserSession {
 
 export interface AuthUser{
     id: string,
+    name: string
+}
+
+export interface User{
+    socket: WebSocket
+    gameId: UUID | null
+    color: string,
     name: string
 }

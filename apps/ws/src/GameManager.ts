@@ -1,5 +1,5 @@
 import WebSocket from "ws";
-import { User } from "./User";
+import { User } from '@chess/commons/definition'
 import { INIT_GAME, MOVE } from "@chess/commons/consts";
 import { Game } from "./Game";
 import { randomUUID } from "crypto";
@@ -49,7 +49,7 @@ export class GameManager {
             const user = this.getUser(socket)
             if(user){
                 if(message.type == INIT_GAME){
-                    
+
                     if(this.pendingUser){
                         // Start the game
                         const newGameId = randomUUID()

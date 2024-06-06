@@ -1,0 +1,8 @@
+export const INIT_GAME = "init_game"
+export const MOVE = "move"
+export const INVALID_MOVE = "invalid_move"
+export const STARTED = "started"
+export const WHITE = "white"
+export const BLACK = "black"
+export const GAME_OVER = "game_over"
+export const BACKEND_URL = "http://localhost:3000"

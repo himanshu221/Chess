@@ -1,4 +1,4 @@
-import { AuthUser, UserSession } from '@chess/commons/consts';
+import { AuthUser, UserSession } from '@chess/commons/definition';
 import prisma from '@chess/db/client';
 import express from 'express'
 import passport from 'passport'
@@ -24,15 +24,20 @@ router.get('/refresh', async (req, resp) => {
                 }
             })
             if(userDb){
-                const userResp : AuthUser = {
-                    id: userDb.id,
-                    name: userDb.username
+                const userResp : {success: boolean, payload: AuthUser} = {
+                    success: true,
+                    payload: {
+                        id: userDb.id,
+                        name: userDb.username
+                    }
                 }
                 return resp.json(userResp)
             }
             return resp.status(401).json({
                 success: false,
-                message: "User not found in database"
+                payload: {
+                    message: "User not found in database"
+                }
             })
                 
         }catch(e) {
@@ -41,18 +46,24 @@ router.get('/refresh', async (req, resp) => {
 
         return resp.status(401).json({
             success: false,
-            message: "User not found in database"
+            payload: {
+                message: "User not found in database"
+            }
         })
     }
     return resp.status(401).json({
         success: false,
-        message: "User not found in database"
+        payload: {
+            message: "User not found in database"
+        }
     })
 })
 router.get('/login/failure', (req, resp) => {
     resp.status(401).json({
         success: false,
-        message: "Login failed"
+        payload: {
+            message: "User not found in database"
+        }
     })
 })
 
