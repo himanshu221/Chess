@@ -1,6 +1,7 @@
 import {atom, selector} from 'recoil'
-import axios, { get } from 'axios'
-import { AuthUser, BACKEND_URL } from '@chess/commons/consts'
+import axios from 'axios'
+import {BACKEND_URL } from '@chess/commons/consts'
+import {UserInfo} from '@chess/commons/definition'
 
 
 export const userAtom = atom({
@@ -8,14 +9,13 @@ export const userAtom = atom({
     default: selector({
         key: 'userAtomSelector',
         get: async () => {
-   
             try{
                 const resp = await axios.get(`${BACKEND_URL}/auth/refresh`,{
                     withCredentials: true
                 });
                
                 if(resp.status === 200){
-                    const userInfo : AuthUser = resp.data
+                    const userInfo : UserInfo = resp.data
                     return userInfo
                 }else{
                     return null;

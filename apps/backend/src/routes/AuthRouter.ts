@@ -4,7 +4,8 @@ import express from 'express'
 import passport from 'passport'
 import jwt from 'jsonwebtoken'
 import { FRONTEND_URL } from '@chess/commons/consts';
-import cookieParser from 'cookie-parser';
+import dotEnv from 'dotenv'
+dotEnv.config()
 
 const router = express.Router()
 const jwtSecret = process.env.JWT_SECRET || 'secret'
@@ -20,7 +21,7 @@ router.get('/refresh', async (req, resp) => {
 
     if(req.isAuthenticated()){
         const user = req.user as UserSession
- 
+     
         try{
             const userDb = await prisma.user.findFirst({
                 where: {
@@ -32,7 +33,7 @@ router.get('/refresh', async (req, resp) => {
                     id: userDb.id,
                     name: userDb.username
                 }, jwtSecret)
-                
+
                 resp.cookie('token', token)
                 const userResp : {success: boolean, payload: AuthUser} = {
                     success: true,

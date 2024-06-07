@@ -10,7 +10,7 @@ export const initPassport = () => {
         scope: ['profile', 'email']
       },
       async function verfiy(accessToken, refreshToken, profile: any, done){
-            
+
             const user = await prisma.user.upsert({
                 create : {
                     id: profile.id, 
@@ -41,10 +41,10 @@ export const initPassport = () => {
     
     // it is used to get the user information from db if the user is present in session already
     // and add the user detials to req.user
-    passport.deserializeUser(async (user: any, done) => {
+    passport.deserializeUser(async (id: any, done) => {
         const usr = await prisma.user.findFirst({
             where: {
-                id: user.id
+                id
             }
         })
         done(null, usr)

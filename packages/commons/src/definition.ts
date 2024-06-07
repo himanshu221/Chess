@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
 import { Chess } from "chess.js"
-import { WebSocket } from "ws";
+import { WebSocket as wss } from "ws";
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
 
 export interface MessageType {
@@ -40,8 +40,17 @@ export interface AuthUser{
 
 export interface User{
     id: string,
-    socket:  WebSocket,
+    socket:  wss,
     gameId? : UUID,
     color? : string,
     name: string
+}
+
+export interface UserInfo{
+    success: boolean,
+    payload: {
+        id?: string,
+        name?: string,
+        message?: string
+    }
 }

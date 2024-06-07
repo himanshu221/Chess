@@ -41,15 +41,15 @@ export async function saveGameToDB(
  * @param from - The starting position of the move.
  * @param to - The ending position of the move.
  */
-export async function saveMoveToDB(gameId: string | undefined, from: string, to: string) {
-    if(gameId){
+export async function saveMoveToDB(gameId: string, from: string, to: string) {
         try{
             await prisma.move.create({
                 data: {
                     game: {
                         connect: {
                             id: gameId
-                        }
+                        },
+                        
                     },
                     to,
                     from
@@ -58,22 +58,45 @@ export async function saveMoveToDB(gameId: string | undefined, from: string, to:
         }catch(e){
             console.error(e)
         }
-    }
 }
 
-export async function updateGameStatus(gameId: string, status: any){
-    if(gameId){
+/**
+ * Updates the status and result of a game.
+ *
+ * @param gameId - The ID of the game to update.
+ * @param status - The new status of the game.
+ * @param result - The new result of the game.
+ * @returns A Promise that resolves when the game status has been updated.
+ */
+export async function updateGameStatus(gameId: string, currentState: string, status: any, result: any){
+    if(status === "IN_PROGRESS"){
         try{
             await prisma.game.update({
                 where: {
                     id: gameId
                 },
                 data:{
-                    status: status
-                    
-
+                    status: status,
+                    currentState: currentState
                 }
             })
+        }catch(e){
+            console.error(e)
+        }
+    }else{
+        try{
+            await prisma.game.update({
+                where: {
+                    id: gameId
+                },
+                data:{
+                    status: status,
+                    currentState: currentState,
+                    result
+                }
+            })
+        }catch(e){
+            console.error(e)
         }
     }
 }

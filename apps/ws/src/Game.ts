@@ -3,7 +3,7 @@ import { User } from '@chess/commons/definition'
 import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, STARTED, WHITE} from "@chess/commons/consts"
 import { Move } from '@chess/commons/definition'
 import { UUID } from "crypto";
-import { saveGameToDB, saveMoveToDB } from "./store/db";
+import { saveGameToDB, saveMoveToDB, updateGameStatus } from "./store/db";
 import { GameManager } from "./GameManager";
 
 export class Game {
@@ -75,10 +75,10 @@ export class Game {
             payload: move
         }))
         
-        saveMoveToDB(this.player1.gameId, move.to, move.from);
+        saveMoveToDB(this.id, move.from, move.to);
 
         if(this.board.isGameOver()){
-            const playerColor = this.board.turn() == 'w' ? "black" : "white";
+            const playerColor = this.board.turn() == 'w' ? "BLACK" : "WHITE";
             this.player1.socket.send(JSON.stringify({
                 type: GAME_OVER,
                 payload: {
@@ -91,13 +91,16 @@ export class Game {
                     message: `${playerColor}` 
                 }
             }))
-            
+            const result = this.board.isDraw() ? "DRAW" : playerColor;
             GameManager.getInstance().removeGame(this.player1.gameId)
             this.player1.color=""
             this.player1.gameId= undefined
             this.player2.color=""
             this.player2.gameId= undefined
+            updateGameStatus(this.id, this.board.fen(), "ENDED", result)
             return
+        }else{
+            updateGameStatus(this.id, this.board.fen(), "IN_PROGRESS","")
         }
     }
 }

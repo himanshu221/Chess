@@ -16,6 +16,7 @@ export const Game = () => {
     const navigate = useNavigate()
     const user = useUser()
     const socket = useSocket()
+
     const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false)
     const [opponentName, setOpponentName] = useState<string>("")
     const [startGame, setStartGame] = useState<boolean>(false)
@@ -23,24 +24,17 @@ export const Game = () => {
     const [board, setBoard] = useState<string>(game.fen())
     const [playerColor, setPlayerColor] = useState<BoardOrientation>("white")
     const [moves, setMoves] = useState<string[]>([])
-
+    
     function startGameHandler() {
         if(socket){
-            console.log(user.getValue()?.name)
-            socket.send(JSON.stringify({
-                type: INIT_GAME,
-                payload: {
-                    name: user.getValue()?.name
-                }
-
-            }))
+            socket.send(JSON.stringify({type: INIT_GAME}))
             setStartButtonClicked(true)
             setOpponentName("Finding opponent...")
         }
     }
 
     useEffect(() => {
-        if(!user || user.state === 'hasError'){
+        if(!user || user.state === 'hasError' || (user.state !== 'loading' && !user.getValue()?.success)){
             navigate('/login')
         }
     },[user])
@@ -85,12 +79,11 @@ export const Game = () => {
 
         }, [socket])
 
-    
-    if(user.state === 'loading'){
+    if(user.state === "loading"){
         return <div className="bg-backboard h-screen flex justify-center items-center">
             <Loader />
         </div>
-    }
+    }   
 
     return <div className="bg-backboard h-screen flex justify-center items-center overflow-auto">
         <div className="h-[90%] w-[60%] lg:w-[60%] lg:h-[90%] backdrop-saturate-90 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-5 overflow-auto">
@@ -114,7 +107,7 @@ export const Game = () => {
                             <img src="/user-image.svg" alt="" />
                         </div>
                         <div>
-                            {user.getValue()?.name}
+                            {user.getValue()?.payload.name}
                         </div>
                     </div>
                 </div>

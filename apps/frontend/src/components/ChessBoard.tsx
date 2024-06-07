@@ -1,6 +1,7 @@
 
-import { ChessBoardProps, MOVE } from "@chess/commons/consts";
+import { MOVE } from "@chess/commons/consts";
 import { Chessboard } from "react-chessboard"
+import {ChessBoardProps} from "@chess/commons/definition"
 import { Square } from "react-chessboard/dist/chessboard/types"
 
 export const ChessBoard  = ({socket, moves, setMoves, game ,gameStart,  setGame,  board, setBoard, playerColor} : ChessBoardProps) => {
