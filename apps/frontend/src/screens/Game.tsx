@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { useSocket } from "../hooks/socket"
 import { MessageType } from '@chess/commons/definition'
-import { GAME_OVER, INIT_GAME, MOVE, STARTED } from "@chess/commons/consts"
+import { ACTIVE, GAME_OVER, INIT_GAME, MOVE, STARTED } from "@chess/commons/consts"
 import { ChessBoard } from "../components/ChessBoard"
 import { Chess } from "chess.js"
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
@@ -45,6 +45,20 @@ export const Game = () => {
         socket.onmessage = (event) => {
             const message : MessageType = JSON.parse(event.data)
             switch(message.type) {
+                case ACTIVE:
+                    if(message.payload){
+                        setPlayerColor(message.payload.color)
+                        setStartGame(true)
+                        navigate(`/game/${message.payload.gameId}`)
+                        setOpponentName(message.payload.opponentName)
+                        setGame(new Chess(message.payload.boardFen))
+                        setBoard(message.payload.boardFen)
+                        setMoves(message.payload.moves)
+                        setStartButtonClicked(true)
+                    }else{
+                        navigate('/game/random')
+                    }
+                    break;
                 case STARTED:
                     if(message.payload){
                         setPlayerColor(message.payload.color)
@@ -78,6 +92,17 @@ export const Game = () => {
         }   
 
         }, [socket])
+
+    useEffect(() => {
+        if(socket && user && user.state === 'hasValue' && user.getValue()?.success){
+            socket.send(JSON.stringify({
+                type: ACTIVE,
+                payload: {
+                    id: user.getValue()?.payload.id
+                }
+            }))
+        }
+    },[user, socket])
 
     if(user.state === "loading"){
         return <div className="bg-backboard h-screen flex justify-center items-center">

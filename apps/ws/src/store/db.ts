@@ -1,4 +1,7 @@
+import { IN_PROGRESS } from "@chess/commons/consts";
 import prisma from "@chess/db/client"
+import { Game } from "../Game";
+import { User } from "@chess/commons/definition";
 
 /**
  * Saves a new game to the database.
@@ -99,4 +102,68 @@ export async function updateGameStatus(gameId: string, currentState: string, sta
             console.error(e)
         }
     }
+}
+
+export async function searchActiveGame(userId: string){
+    try{
+        const gameState = await prisma.game.findFirst({
+            where: {
+                OR: [{
+                    whitePlayerId: userId
+                },{
+                    blackPlayerId: userId
+                }],
+                status: IN_PROGRESS
+                
+            },
+            select: {
+                id: true,
+                whitePlayer: {
+                    select: {
+                        id: true,
+                        username: true
+                    }
+                },
+                blackPlayer: {
+                    select: {
+                        id: true,
+                        username: true
+                    }
+                },
+                moves: {
+                    select: {
+                        to: true
+                    }
+                },
+                currentState: true
+            }
+        })
+
+        return gameState
+    }catch(e){
+        console.error("Error fetching user's active game")
+        console.error(e)
+        return null;
+    }
+}
+
+export async function loadStateFromDb(){
+    const gameStateFromDb = await prisma.game.findMany({
+        where: {
+            status: IN_PROGRESS
+        }
+    })
+
+    const gameState: Game[] = gameStateFromDb.map(game => {
+        const player1: User = {
+            id: game.whitePlayerId,
+        }
+        const player2: User = {
+            id: game.blackPlayerId
+        }
+        const gm = new Game(game.id, player1, player2, game.currentState)
+        return gm
+    })
+
+    return gameState
 }

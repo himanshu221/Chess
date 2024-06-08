@@ -9,7 +9,7 @@ export const useSocket = () => {
         if(!user || user.state === "loading"){
             return
         }
-        console.log(user)
+
         const ws = new  WebSocket(WS_URL);
 
         ws.onopen = () => {

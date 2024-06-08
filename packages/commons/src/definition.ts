@@ -14,7 +14,9 @@ export interface Move {
     color: BoardOrientation
     message: string,
     gameId: string,
-    opponentName: string
+    opponentName: string,
+    boardFen: string,
+    moves: string[]
 }
 
 export interface ChessBoardProps {
@@ -40,10 +42,10 @@ export interface AuthUser{
 
 export interface User{
     id: string,
-    socket:  wss,
-    gameId? : UUID,
+    socket?:  wss,
+    gameId? : string,
     color? : string,
-    name: string
+    name?: string
 }
 
 export interface UserInfo{
