@@ -167,3 +167,13 @@ export async function loadStateFromDb(){
 
     return gameState
 }
+
+export async function getGame(gameId: string){
+    const game = await prisma.game.findFirst({
+        where: {
+            id: gameId
+        }
+    })
+
+    return game
+}

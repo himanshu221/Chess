@@ -93,17 +93,6 @@ export const Game = () => {
 
         }, [socket])
 
-    useEffect(() => {
-        if(socket && user && user.state === 'hasValue' && user.getValue()?.success){
-            socket.send(JSON.stringify({
-                type: ACTIVE,
-                payload: {
-                    id: user.getValue()?.payload.id
-                }
-            }))
-        }
-    },[user, socket])
-
     if(user.state === "loading"){
         return <div className="bg-backboard h-screen flex justify-center items-center">
             <Loader />

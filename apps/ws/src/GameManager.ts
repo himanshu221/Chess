@@ -32,6 +32,7 @@ export class GameManager {
     async addUser(socket: WebSocket, newUser: AuthUser){
         const user = this.users.find(user => user.id === newUser.id)
         const activeGameInfo = await searchActiveGame(newUser.id)
+   
         if(!user){
             if(activeGameInfo){
                 this.users.push({
@@ -40,12 +41,24 @@ export class GameManager {
                     socket,
                     gameId: activeGameInfo.id
                 })
+                this.addHandler(socket)
+                return activeGameInfo
+            }else{
+                this.users.push({
+                    id: newUser.id,
+                    name: newUser.name,
+                    socket
+                })
+                this.addHandler(socket)
+                return null
             }
-            this.addHandler(socket)
         }else{
             user.socket = socket
-            if(activeGameInfo)
+            if(activeGameInfo){
                 user.gameId = activeGameInfo.id
+                this.addHandler(socket)
+                return activeGameInfo
+            }
         }
     }
 
@@ -56,9 +69,11 @@ export class GameManager {
 
     private addHandler(socket: WebSocket){
         // TODO: can use gRPC here, see what is gRPC and how we can use it here
-        socket.on('message', async (data) => {
+        socket.on('message', (data) => {
+
             const message = JSON.parse(data.toString())
             const user = this.getUser(socket)
+
             if(user){
                 if(message.type === INIT_GAME){
 
@@ -84,35 +99,6 @@ export class GameManager {
                         console.log("game :: ", game)
                         game.makeMove(user, message.payload)
                     }
-                }
-                else if(message.type === ACTIVE){
-                    const activeGameInfo = await searchActiveGame(user.id)
-                    if(activeGameInfo){
-                        const opponentName = activeGameInfo.whitePlayer.id === user.id ? 
-                            activeGameInfo.blackPlayer.username: activeGameInfo.whitePlayer.username
-                        const userColor = activeGameInfo.whitePlayer.id === user.id ? "white" : "black";
-                        const moves = activeGameInfo.moves.map(move => move.to)
-                        
-                        if(user.socket){
-                            user.socket.send(JSON.stringify({
-                                type: ACTIVE,
-                                payload :{
-                                    gameId: activeGameInfo.id,
-                                    opponentName: opponentName,
-                                    boardFen: activeGameInfo.currentState,
-                                    color: userColor,
-                                    moves: moves
-                                }
-                            }))
-                        }
-                    }else{
-                        if(user.socket){
-                            user.socket.send(JSON.stringify({
-                                type: ACTIVE
-                            }))
-                        }
-                    }
-                    return
                 }
             }
         })
