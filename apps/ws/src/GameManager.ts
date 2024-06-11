@@ -1,4 +1,5 @@
 import WebSocket from "ws";
+import {Chess } from "chess.js";
 import { AuthUser, User } from '@chess/commons/definition'
 import { ACTIVE, INITAL_BOARD, INIT_GAME, MOVE } from "@chess/commons/consts";
 import { Game } from "./Game";
@@ -32,17 +33,44 @@ export class GameManager {
     async addUser(socket: WebSocket, newUser: AuthUser){
         const user = this.users.find(user => user.id === newUser.id)
         const activeGameInfo = await searchActiveGame(newUser.id)
-   
+
         if(!user){
             if(activeGameInfo){
-                this.users.push({
-                    id: newUser.id,
-                    name: newUser.name,
-                    socket,
-                    gameId: activeGameInfo.id
-                })
-                this.addHandler(socket)
-                return activeGameInfo
+                const game = this.games.find(game => game.id === activeGameInfo.id)
+                if(game){
+                    let uColor = 'w'
+                    if(game.player1.id === newUser.id){
+                        game.player1.name = newUser.name
+                        game.player1.socket = socket
+                        game.player1.gameId = activeGameInfo.id
+                        game.player1.color = 'w'
+                    }else{
+                        game.player2.name = newUser.name
+                        game.player2.socket = socket
+                        game.player2.gameId = activeGameInfo.id
+                        game.player2.color = 'b'
+                        uColor = 'b'
+                    }
+                    game.board = new Chess(activeGameInfo.currentState)
+                    this.users.push({
+                        id: newUser.id,
+                        name: newUser.name,
+                        socket,
+                        color: uColor,
+                        gameId: activeGameInfo.id
+                    })
+                    this.addHandler(socket)
+                    
+                    const opponentName = activeGameInfo.whitePlayer.id === newUser.id ? activeGameInfo.blackPlayer.username : activeGameInfo.whitePlayer.username
+                    const userColor = activeGameInfo.whitePlayer.id === newUser.id ? "white" : "black";
+                    return {
+                        id: activeGameInfo.id,
+                        opponentName,
+                        state: activeGameInfo.currentState,
+                        userColor,
+                        moves: activeGameInfo.moves.map(moves => moves.to)
+                    }
+                }
             }else{
                 this.users.push({
                     id: newUser.id,
@@ -54,12 +82,49 @@ export class GameManager {
             }
         }else{
             user.socket = socket
+            this.addHandler(socket)
             if(activeGameInfo){
+                const game = this.games.find(game => game.id === activeGameInfo.id)
                 user.gameId = activeGameInfo.id
-                this.addHandler(socket)
-                return activeGameInfo
+                if(game){
+                    let uColor = 'w'
+                    if(game.player1.id === newUser.id){
+                        game.player1.name = newUser.name
+                        game.player1.socket = socket
+                        game.player1.color = 'w'
+                        game.player1.gameId = activeGameInfo.id
+
+                    }else{
+                        game.player2.name = newUser.name
+                        game.player2.socket = socket
+                        game.player2.color = 'b'
+                        game.player2.gameId = activeGameInfo.id
+                        uColor = 'b'
+
+                    }
+                    game.board = new Chess(activeGameInfo.currentState)
+                    this.users.push({
+                        id: newUser.id,
+                        name: newUser.name,
+                        socket,
+                        color: uColor,
+                        gameId: activeGameInfo.id
+                    })
+                    this.addHandler(socket)
+                    
+                    const opponentName = activeGameInfo.whitePlayer.id === newUser.id ? activeGameInfo.blackPlayer.username : activeGameInfo.whitePlayer.username
+                    const userColor = activeGameInfo.whitePlayer.id === newUser.id ? "white" : "black";
+                    return {
+                        id: activeGameInfo.id,
+                        opponentName,
+                        state: activeGameInfo.currentState,
+                        userColor,
+                        moves: activeGameInfo.moves.map(moves => moves.to)
+                    }
+                }
             }
         }
+        return null;
     }
 
         removeUser(socket: WebSocket){
@@ -78,13 +143,15 @@ export class GameManager {
                 if(message.type === INIT_GAME){
 
                     if(this.pendingUser){
+                        if(this.pendingUser.id === user.id)
+                            return;
                         // Start the game
                         const newGameId = randomUUID()
                         user.gameId = newGameId
                         user.color = "b"
                         this.pendingUser.gameId = newGameId
                         this.pendingUser.color = "w"
-                        const game = new Game(newGameId, this.pendingUser,user, INITAL_BOARD)
+                        const game = new Game(newGameId, this.pendingUser, user, INITAL_BOARD)
                         this.games.push(game)
 
                         saveGameToDB(newGameId, this.pendingUser.id, user.id)
@@ -94,9 +161,8 @@ export class GameManager {
                     }
                 }
                 else if(message.type === MOVE){
-                    const game = this.games.find(game => game.getId() === user.gameId)
+                    const game = this.games.find(game => game.id === user.gameId)
                     if(game){
-                        console.log("game :: ", game)
                         game.makeMove(user, message.payload)
                     }
                 }
@@ -106,7 +172,7 @@ export class GameManager {
 
     removeGame(gameId: string | undefined){
         if(gameId){
-            this.games = this.games.filter(game => game.getId() !== gameId)
+            this.games = this.games.filter(game => game.id !== gameId)
         }
         return
     }
@@ -115,5 +181,9 @@ export class GameManager {
         const activeGameInDB : Game[] = await loadStateFromDb()
         this.games = activeGameInDB
     }
+
+}
+
+function addGame(){
 
 }

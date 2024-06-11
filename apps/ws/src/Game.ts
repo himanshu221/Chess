@@ -7,11 +7,11 @@ import { saveGameToDB, saveMoveToDB, updateGameStatus } from "./store/db";
 import { GameManager } from "./GameManager";
 
 export class Game {
-    private id: string
-    private player1: User;
-    private player2: User;
-    private board: Chess
-    private startTime: Date
+    id: string
+    player1: User;
+    player2: User;
+    board: Chess
+    startTime: Date
 
     constructor(id: string, player1: User, player2: User, fen: string){
         this.id = id
@@ -25,7 +25,7 @@ export class Game {
                 type: STARTED,
                 payload: {
                     color: WHITE,
-                    gameId: this.getId(),
+                    gameId: this.id,
                     opponentName: player2.name
                 }
             }))
@@ -35,18 +35,21 @@ export class Game {
                 type: STARTED,
                 payload: {
                     color: BLACK,
-                    gameId: this.getId(),
+                    gameId: this.id,
                     opponentName: player1.name
                 }
             }))
         }
 
     }
-    getId() {
-        return this.id
+
+    getPlayer(user: User){
+        if(user.id === this.player1.id)
+            return this.player1;
+        else return this.player2.id
     }
     getOpponent(user: User){
-        if(user.socket !== this.player1.socket)
+        if(user.id !== this.player1.id)
             return this.player1
         else return this.player2
     }
@@ -69,9 +72,9 @@ export class Game {
             }))
             return
         }
+
         const opponent = this.getOpponent(user)
-        console.log(opponent)
-        
+
         opponent.socket?.send(JSON.stringify({
             type: MOVE,
             payload: move

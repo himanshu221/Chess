@@ -69,12 +69,14 @@ export const Game = () => {
                     break;
                 
                 case MOVE:
+                    console.log(game)
                     if(message.payload){
                         game.move({
                             from: message.payload.from,
                             to: message.payload.to,
                             promotion: 'q'
                         })
+                        console.log(game)
                         setGame(game)
                         setBoard(game.fen())
                         moves.push(message.payload.to)
@@ -87,7 +89,7 @@ export const Game = () => {
                             position: 'top-center',
                         })
                     }
-                    
+                    break;
             }
         }   
 

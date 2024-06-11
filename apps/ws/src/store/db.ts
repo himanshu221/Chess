@@ -156,7 +156,7 @@ export async function loadStateFromDb(){
 
     const gameState: Game[] = gameStateFromDb.map(game => {
         const player1: User = {
-            id: game.whitePlayerId,
+            id: game.whitePlayerId
         }
         const player2: User = {
             id: game.blackPlayerId
@@ -166,14 +166,4 @@ export async function loadStateFromDb(){
     })
 
     return gameState
-}
-
-export async function getGame(gameId: string){
-    const game = await prisma.game.findFirst({
-        where: {
-            id: gameId
-        }
-    })
-
-    return game
 }
