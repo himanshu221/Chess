@@ -6,14 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "exports":{
-    "./user" : "./src/hooks/user.ts"
+  "exports": {
+    "./user": "./src/hooks/user.ts",
+    "./chessboard": "./src/atom/chessboard.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.2",
+    "chess.js": "^1.0.0-beta.8",
+    "react-chessboard": "^4.6.0",
     "recoil": "^0.7.7"
   }
 }

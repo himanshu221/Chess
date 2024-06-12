@@ -25,7 +25,7 @@ async function main() {
                                 payload :{
                                         gameId: activeGame.id,
                                         opponentName: activeGame.opponentName,
-                                        boardFen: activeGame,
+                                        boardFen: activeGame.state,
                                         color: activeGame.userColor,
                                         moves: activeGame.moves
                                 }}))

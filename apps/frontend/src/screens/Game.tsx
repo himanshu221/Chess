@@ -4,13 +4,13 @@ import { MessageType } from '@chess/commons/definition'
 import { ACTIVE, GAME_OVER, INIT_GAME, MOVE, STARTED } from "@chess/commons/consts"
 import { ChessBoard } from "../components/ChessBoard"
 import { Chess } from "chess.js"
-import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
 import toast, { Toaster } from "react-hot-toast"
 import { MoveTable } from "../components/MoveTable"
 import { Button } from "@chess/ui/button"
 import { Loader } from "../components/Loader"
 import { useNavigate } from "react-router-dom"
 import { useUser } from "@chess/store/user"
+import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
 
 export const Game = () => {
     const navigate = useNavigate()
@@ -24,7 +24,7 @@ export const Game = () => {
     const [board, setBoard] = useState<string>(game.fen())
     const [playerColor, setPlayerColor] = useState<BoardOrientation>("white")
     const [moves, setMoves] = useState<string[]>([])
-    
+
     function startGameHandler() {
         if(socket){
             socket.send(JSON.stringify({type: INIT_GAME}))
@@ -47,14 +47,16 @@ export const Game = () => {
             switch(message.type) {
                 case ACTIVE:
                     if(message.payload){
+                        navigate(`/game/${message.payload.gameId}`, { replace: true })
+
                         setPlayerColor(message.payload.color)
                         setStartGame(true)
-                        navigate(`/game/${message.payload.gameId}`)
-                        setOpponentName(message.payload.opponentName)
-                        setGame(new Chess(message.payload.boardFen))
-                        setBoard(message.payload.boardFen)
                         setMoves(message.payload.moves)
                         setStartButtonClicked(true)
+                        setOpponentName(message.payload.opponentName)
+                        setBoard(message.payload.boardFen)
+                        game.load(message.payload.boardFen)
+                        setGame(game)
                     }else{
                         navigate('/game/random')
                     }
@@ -69,18 +71,17 @@ export const Game = () => {
                     break;
                 
                 case MOVE:
-                    console.log(game)
                     if(message.payload){
                         game.move({
                             from: message.payload.from,
                             to: message.payload.to,
                             promotion: 'q'
                         })
-                        console.log(game)
-                        setGame(game)
-                        setBoard(game.fen())
+
                         moves.push(message.payload.to)
                         setMoves(moves)
+                        setBoard(game.fen())
+                        setGame(game)
                     }
                     break;
                 case GAME_OVER:

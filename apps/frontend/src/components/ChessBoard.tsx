@@ -5,7 +5,7 @@ import {ChessBoardProps} from "@chess/commons/definition"
 import { Square } from "react-chessboard/dist/chessboard/types"
 
 export const ChessBoard  = ({socket, moves, setMoves, game ,gameStart,  setGame,  board, setBoard, playerColor} : ChessBoardProps) => {
-    
+
     function onDropHandler(sourceSquare: Square, targetSquare: Square){
         if(game.turn() !== playerColor.charAt(0)){
             return false;
@@ -17,10 +17,10 @@ export const ChessBoard  = ({socket, moves, setMoves, game ,gameStart,  setGame,
                 promotion: 'q'
             })
             if(socket){
-                setGame(game)
-                setBoard(game.fen())
                 moves.push(targetSquare)
                 setMoves(moves)
+                setBoard(game.fen())
+                setGame(game)
                 socket.send(JSON.stringify({
                     type: MOVE,
                     payload: {
