@@ -11,11 +11,20 @@ import { Loader } from "../components/Loader"
 import { useNavigate } from "react-router-dom"
 import { useUser } from "@chess/store/user"
 import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
+import MoveSound from "/move-self.mp3"
+import CaptureSound from "/capture.mp3"
+import CheckSound  from "/move-check.mp3"
+import StartSound from "/start.mp3"
+import { GameEndModal } from "../components/GameEndModal"
 
 export const Game = () => {
     const navigate = useNavigate()
     const user = useUser()
     const socket = useSocket()
+    const moveAudio = new Audio(MoveSound);
+    const captureAudio = new Audio(CaptureSound);
+    const checkAudio = new Audio(CheckSound)
+    const startAudio = new Audio(StartSound)
 
     const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false)
     const [opponentName, setOpponentName] = useState<string>("")
@@ -24,6 +33,9 @@ export const Game = () => {
     const [board, setBoard] = useState<string>(game.fen())
     const [playerColor, setPlayerColor] = useState<BoardOrientation>("white")
     const [moves, setMoves] = useState<string[]>([])
+    const [checkedActiveGame, setCheckActiveGame] = useState<boolean>(false);
+    const [showEndGameModal, setShowEndGameModal] = useState<boolean>(false)
+    const [winnerColor, setWinnerColor] = useState<string>("")
 
     function startGameHandler() {
         if(socket){
@@ -48,16 +60,19 @@ export const Game = () => {
                 case ACTIVE:
                     if(message.payload){
                         navigate(`/game/${message.payload.gameId}`, { replace: true })
-
                         setPlayerColor(message.payload.color)
                         setStartGame(true)
-                        setMoves(message.payload.moves)
+                        message.payload.moves.forEach(move => moves.push(move))
+                        setMoves(moves)
                         setStartButtonClicked(true)
                         setOpponentName(message.payload.opponentName)
                         setBoard(message.payload.boardFen)
                         game.load(message.payload.boardFen)
                         setGame(game)
+                        setCheckActiveGame(true)
+                        startAudio.play()
                     }else{
+                        setCheckActiveGame(true)
                         navigate('/game/random')
                     }
                     break;
@@ -67,17 +82,25 @@ export const Game = () => {
                         setStartGame(true)
                         navigate(`/game/${message.payload.gameId}`)
                         setOpponentName(message.payload.opponentName)
+                        startAudio.play()
                     }
                     break;
                 
                 case MOVE:
                     if(message.payload){
-                        game.move({
+                        const move = game.move({
                             from: message.payload.from,
                             to: message.payload.to,
                             promotion: 'q'
                         })
-
+                        if(game.isCheck()){
+                            checkAudio.play()
+                        }else if(move.captured){
+                            captureAudio.play()
+                        }
+                        else{
+                            moveAudio.play()
+                        }
                         moves.push(message.payload.to)
                         setMoves(moves)
                         setBoard(game.fen())
@@ -89,6 +112,8 @@ export const Game = () => {
                         toast(`${message.payload.message} won`,{
                             position: 'top-center',
                         })
+                        setWinnerColor(message.payload.message)
+                        setShowEndGameModal(true)
                     }
                     break;
             }
@@ -96,13 +121,13 @@ export const Game = () => {
 
         }, [socket])
 
-    if(user.state === "loading"){
+    if(user.state === "loading" || !checkedActiveGame){
         return <div className="bg-backboard h-screen flex justify-center items-center">
             <Loader />
         </div>
     }   
 
-    return <div className="bg-backboard h-screen flex justify-center items-center overflow-auto">
+    return <div className="bg-backboard h-screen flex justify-center items-center overflow-auto relative">
         <div className="h-[90%] w-[60%] lg:w-[60%] lg:h-[90%] backdrop-saturate-90 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-5 overflow-auto">
             <div className="col-span-1 lg:col-span-2 flex flex-col justify-center items-center">
                 <div className="w-[100%] h-16 px-5 flex justify-between items-center text-lg text-white">
@@ -137,6 +162,8 @@ export const Game = () => {
                 </div>
             }
         </div>
-        <Toaster />
+    {
+        showEndGameModal ? <GameEndModal message={`${winnerColor} won the game`} buttonText="New Game" setEndGameModal={setShowEndGameModal} /> : null
+    }
     </div>
 }

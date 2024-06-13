@@ -29,6 +29,8 @@ async function main() {
                                         color: activeGame.userColor,
                                         moves: activeGame.moves
                                 }}))
+                }else{
+                        ws.send(JSON.stringify({type: ACTIVE}))
                 }
                 ws.on('close', ()=> gameManager.removeUser(ws))
         });
