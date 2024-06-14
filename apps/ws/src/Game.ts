@@ -1,6 +1,6 @@
 import {Chess } from "chess.js";
 import { User } from '@chess/commons/definition'
-import { BLACK, GAME_OVER, INVALID_MOVE, MOVE, STARTED, WHITE} from "@chess/commons/consts"
+import { BLACK, CHECKMATE, GAME_OVER, INVALID_MOVE, MOVE, RESIGN, STARTED, WHITE} from "@chess/commons/consts"
 import { Move } from '@chess/commons/definition'
 import { UUID } from "crypto";
 import { saveGameToDB, saveMoveToDB, updateGameStatus } from "./store/db";
@@ -83,32 +83,36 @@ export class Game {
         saveMoveToDB(this.id, move.from, move.to);
 
         if(this.board.isGameOver()){
-            const playerColor = this.board.turn() == 'w' ? "BLACK" : "WHITE";
-            this.player1.socket?.send(JSON.stringify({
-                type: GAME_OVER,
-                payload: {
-                    message: `${playerColor}` 
-                }
-            }))
-            this.player2.socket?.send(JSON.stringify({
-                type: GAME_OVER,
-                payload: {
-                    message: `${playerColor}` 
-                }
-            }))
-            const result = this.board.isDraw() ? "DRAW" : playerColor;
-            const gm = await GameManager.getInstance()
-            gm.removeGame(this.player1.gameId)
-            this.player1.color=""
-            this.player1.gameId= undefined
-            this.player2.color=""
-            this.player2.gameId= undefined
-            updateGameStatus(this.id, this.board.fen(), "ENDED", result)
-            return
+            this.endGame(user, CHECKMATE)
         }else{
             updateGameStatus(this.id, this.board.fen(), "IN_PROGRESS","")
         }
     }
 
+    async endGame(user: User, by: string){
+        let playerColor = ""
+        if(by === RESIGN){
+            playerColor =  user.color === "w" ? BLACK : WHITE;
+        }else{
+            playerColor = this.board.turn() == 'w' ? BLACK : WHITE
+        }
+        this.player1.socket?.send(JSON.stringify({
+            type: GAME_OVER,
+            payload: {
+                message: `${playerColor} won by ${by}` 
+            }
+        })) 
+        this.player2.socket?.send(JSON.stringify({
+            type: GAME_OVER,
+            payload: {
+                message: `${playerColor} won by ${by}` 
+            }
+        }))
+        const result = this.board.isDraw() ? "DRAW" : playerColor;
+        const gm = await GameManager.getInstance()
+        gm.removeGame(this.player1.gameId)
+        updateGameStatus(this.id, this.board.fen(), "ENDED", result)
+        return
+    }
 
 }

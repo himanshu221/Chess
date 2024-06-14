@@ -1,10 +1,10 @@
 import WebSocket from "ws";
-import {Chess } from "chess.js";
+import {BLACK, Chess } from "chess.js";
 import { AuthUser, User } from '@chess/commons/definition'
-import { ACTIVE, INITAL_BOARD, INIT_GAME, MOVE } from "@chess/commons/consts";
+import { ACTIVE, GAME_OVER, INITAL_BOARD, INIT_GAME, MOVE, RESIGN, WHITE } from "@chess/commons/consts";
 import { Game } from "./Game";
 import { randomUUID } from "crypto";
-import { loadStateFromDb, saveGameToDB, searchActiveGame } from "./store/db";
+import { loadStateFromDb, saveGameToDB, searchActiveGame, updateGameStatus } from "./store/db";
 
 export class GameManager {
     private static instance: GameManager;
@@ -62,7 +62,7 @@ export class GameManager {
                     this.addHandler(socket)
                     
                     const opponentName = activeGameInfo.whitePlayer.id === newUser.id ? activeGameInfo.blackPlayer.username : activeGameInfo.whitePlayer.username
-                    const userColor = activeGameInfo.whitePlayer.id === newUser.id ? "white" : "black";
+                    const userColor = activeGameInfo.whitePlayer.id === newUser.id ? WHITE : BLACK;
                     return {
                         id: activeGameInfo.id,
                         opponentName,
@@ -113,7 +113,7 @@ export class GameManager {
                     this.addHandler(socket)
                     
                     const opponentName = activeGameInfo.whitePlayer.id === newUser.id ? activeGameInfo.blackPlayer.username : activeGameInfo.whitePlayer.username
-                    const userColor = activeGameInfo.whitePlayer.id === newUser.id ? "white" : "black";
+                    const userColor = activeGameInfo.whitePlayer.id === newUser.id ? WHITE : BLACK;
                     return {
                         id: activeGameInfo.id,
                         opponentName,
@@ -166,6 +166,12 @@ export class GameManager {
                         game.makeMove(user, message.payload)
                     }
                 }
+                else if(message.type === RESIGN){
+                    const game = this.games.find(game => game.id === user.gameId)
+                    if(game){
+                        game.endGame(user, RESIGN)
+                    }
+                }
             }
         })
     }
@@ -181,9 +187,5 @@ export class GameManager {
         const activeGameInDB : Game[] = await loadStateFromDb()
         this.games = activeGameInDB
     }
-
-}
-
-function addGame(){
 
 }

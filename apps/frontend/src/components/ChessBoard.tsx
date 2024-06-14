@@ -1,5 +1,5 @@
 
-import { MOVE } from "@chess/commons/consts";
+import { MOVE, WHITE } from "@chess/commons/consts";
 import MoveSound from "/move-self.mp3"
 import CaptureSound from "/capture.mp3"
 import CheckSound  from "/move-check.mp3"
@@ -13,7 +13,7 @@ export const ChessBoard  = ({socket, moves, setMoves, game ,gameStart,  setGame,
     const checkAudio = new Audio(CheckSound)
 
     function onDropHandler(sourceSquare: Square, targetSquare: Square){
-        if(game.turn() !== playerColor.charAt(0)){
+        if(game.turn().toUpperCase() !== playerColor.charAt(0)){
             return false;
         }
         try{
@@ -57,7 +57,7 @@ export const ChessBoard  = ({socket, moves, setMoves, game ,gameStart,  setGame,
                 animationDuration={100}
                 position={board} 
                 autoPromoteToQueen={true}
-                boardOrientation={playerColor}
+                boardOrientation={playerColor === WHITE ? "white" : "black"}
                 snapToCursor={true}
                 onPieceDrop={onDropHandler}
                 customBoardStyle={

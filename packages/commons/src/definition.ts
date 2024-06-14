@@ -11,7 +11,7 @@ export interface MessageType {
 export interface Move {
     from: string
     to: string
-    color: BoardOrientation
+    color: string,
     message: string,
     gameId: string,
     opponentName: string,
@@ -28,7 +28,7 @@ export interface ChessBoardProps {
     setGame: React.Dispatch<React.SetStateAction<Chess>>,
     board: string, 
     setBoard:  React.Dispatch<React.SetStateAction<string>>,
-    playerColor: BoardOrientation
+    playerColor: string
 }
 
 export interface UserSession {
