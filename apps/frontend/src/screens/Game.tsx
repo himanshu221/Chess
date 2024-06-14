@@ -36,6 +36,7 @@ export const Game = () => {
     const [checkedActiveGame, setCheckActiveGame] = useState<boolean>(false);
     const [showEndGameModal, setShowEndGameModal] = useState<boolean>(false)
     const [winnerColor, setWinnerColor] = useState<string>("")
+    const [showResignOpt, setShowResignOpt] = useState<boolean>(false)
 
     function startGameHandler() {
         if(socket){
@@ -127,7 +128,7 @@ export const Game = () => {
         </div>
     }   
 
-    return <div className="bg-backboard h-screen flex justify-center items-center overflow-auto relative">
+    return <div onClick={() => setShowResignOpt(!showResignOpt)} className="bg-backboard h-screen flex justify-center items-center overflow-auto relative">
         <div className="h-[90%] w-[60%] lg:w-[60%] lg:h-[90%] backdrop-saturate-90 grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-5 overflow-auto">
             <div className="col-span-1 lg:col-span-2 flex flex-col justify-center items-center">
                 <div className="w-[100%] h-16 px-5 flex justify-between items-center text-lg text-white">
@@ -151,12 +152,30 @@ export const Game = () => {
                         <div>
                             {user.getValue()?.payload.name}
                         </div>
+                        <div className="relative">
+                            {showResignOpt ? <div className="absolute bottom-10 w-48 flex flex-col justify-center items-start bg-black bg-opacity-80 p-2 rounded-lg">
+                                <div className="text-md w-full flex justify-center items-start">
+                                    Are you sure ?
+                                </div>
+                                <div className="flex w-full items-center justify-center">
+                                    <div>
+                                        <Button onClickHandler={() => {}} disabled={false} className="bg-gray-300 text-sm hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg mx-3">Yes</Button>
+                                    </div>
+                                    <div>
+                                        <Button onClickHandler={() => {}} disabled={false} className="bg-gray-300 text-sm hover:bg-gray-400 text-gray-800 font-bold py-1 px-2 rounded-lg mx-3">No</Button>
+                                    </div>
+                                </div>
+                            </div>: null}
+                            {startButtonClicked ? <Button onClickHandler={() => setShowResignOpt(true)}  disabled={false} className="text-white bg-yellow-700 hover:bg-yellow-800 font-medium rounded-lg text-sm px-3 py-1 text-center me-1 mb-1">
+                                Resign
+                            </Button>: null}
+                        </div>
                     </div>
                 </div>
             </div>
             {startButtonClicked ? <MoveTable moves={moves} /> : 
                 <div className="flex justify-center items-center">
-                    <Button onClickHandler={startGameHandler} disabled={startButtonClicked} className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 disabled:bg-[#FF9119]/80 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center dark:hover:bg-[#FF9119]/80 dark:focus:ring-[#FF9119]/40 me-2 mb-2">
+                    <Button onClickHandler={startGameHandler} disabled={startButtonClicked} className="text-white bg-[#FF9119] hover:bg-[#FF9119]/80 focus:ring-4 disabled:bg-[#FF9119]/80 focus:outline-none focus:ring-[#FF9119]/50 font-medium rounded-lg text-3xl px-5 py-2.5 text-center inline-flex items-center me-2 mb-2">
                         Start Game
                     </ Button>
                 </div>

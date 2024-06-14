@@ -53,6 +53,12 @@ router.get('/refresh', async (req, resp) => {
                 
         }catch(e) {
             console.log(e)
+            return resp.status(401).json({
+                success: false,
+                payload: {
+                    message: "Issue occured while searching user"
+                }
+            })
         }
 
         return resp.status(401).json({

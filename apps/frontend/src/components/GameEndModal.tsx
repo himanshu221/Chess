@@ -10,7 +10,7 @@ export const GameEndModal = ({message, buttonText, setEndGameModal}: {
     function handler(){
         setEndGameModal(false)
         navigate('/game/random', {replace:true})
-        navigate(0);
+        navigate(0)
     }
     return <div className="backdrop-blur-sm fixed inset-0 justify-center items-center flex">
          <div className="h-[40%] w-[40%] bg-black bg-opacity-50 top-auto left-auto p-10 rounded-lg text-center text-white">
