@@ -5,12 +5,14 @@
   "main": "index.js",
   "scripts": {
     "dev": "esbuild src/index.ts --platform=node --bundle --outdir=dist && nodemon dist/index.js",
-    "build": "esbuild src/index.ts --platform=node --bundle --outdir=dist"
+    "build": "esbuild src/index.ts --platform=node --bundle --outdir=dist",
+    "start": "nodemon dist/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@chess/db": "*",
     "@chess/commons": "*",
     "@types/cookie-parser": "^1.4.7",
     "@types/cors": "^2.8.17",
