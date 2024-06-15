@@ -1,10 +1,10 @@
 import WebSocket from "ws";
-import {BLACK, Chess } from "chess.js";
+import { Chess } from "chess.js";
 import { AuthUser, User } from '@chess/commons/definition'
-import { ACTIVE, GAME_OVER, INITAL_BOARD, INIT_GAME, MOVE, RESIGN, WHITE } from "@chess/commons/consts";
+import { INITAL_BOARD, INIT_GAME, MOVE, RESIGN, WHITE, BLACK } from "@chess/commons/consts";
 import { Game } from "./Game";
 import { randomUUID } from "crypto";
-import { loadStateFromDb, saveGameToDB, searchActiveGame, updateGameStatus } from "./store/db";
+import { loadStateFromDb, saveGameToDB, searchActiveGame } from "./store/db";
 
 export class GameManager {
     private static instance: GameManager;
@@ -38,18 +38,18 @@ export class GameManager {
             if(activeGameInfo){
                 const game = this.games.find(game => game.id === activeGameInfo.id)
                 if(game){
-                    let uColor = 'w'
+                    let uColor = WHITE
                     if(game.player1.id === newUser.id){
                         game.player1.name = newUser.name
                         game.player1.socket = socket
                         game.player1.gameId = activeGameInfo.id
-                        game.player1.color = 'w'
+                        game.player1.color = WHITE
                     }else{
                         game.player2.name = newUser.name
                         game.player2.socket = socket
                         game.player2.gameId = activeGameInfo.id
-                        game.player2.color = 'b'
-                        uColor = 'b'
+                        game.player2.color = BLACK
+                        uColor = BLACK
                     }
                     game.board = new Chess(activeGameInfo.currentState)
                     this.users.push({
@@ -87,19 +87,19 @@ export class GameManager {
                 const game = this.games.find(game => game.id === activeGameInfo.id)
                 user.gameId = activeGameInfo.id
                 if(game){
-                    let uColor = 'w'
+                    let uColor = WHITE
                     if(game.player1.id === newUser.id){
                         game.player1.name = newUser.name
                         game.player1.socket = socket
-                        game.player1.color = 'w'
+                        game.player1.color = WHITE
                         game.player1.gameId = activeGameInfo.id
 
                     }else{
                         game.player2.name = newUser.name
                         game.player2.socket = socket
-                        game.player2.color = 'b'
+                        game.player2.color = BLACK
                         game.player2.gameId = activeGameInfo.id
-                        uColor = 'b'
+                        uColor = BLACK
 
                     }
                     game.board = new Chess(activeGameInfo.currentState)
@@ -148,12 +148,11 @@ export class GameManager {
                         // Start the game
                         const newGameId = randomUUID()
                         user.gameId = newGameId
-                        user.color = "b"
+                        user.color = BLACK
                         this.pendingUser.gameId = newGameId
-                        this.pendingUser.color = "w"
+                        this.pendingUser.color = WHITE
                         const game = new Game(newGameId, this.pendingUser, user, INITAL_BOARD)
                         this.games.push(game)
-
                         saveGameToDB(newGameId, this.pendingUser.id, user.id)
                         this.pendingUser = null
                     }else{

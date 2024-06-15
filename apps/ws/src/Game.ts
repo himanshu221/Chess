@@ -2,8 +2,7 @@ import {Chess } from "chess.js";
 import { User } from '@chess/commons/definition'
 import { BLACK, CHECKMATE, GAME_OVER, INVALID_MOVE, MOVE, RESIGN, STARTED, WHITE} from "@chess/commons/consts"
 import { Move } from '@chess/commons/definition'
-import { UUID } from "crypto";
-import { saveGameToDB, saveMoveToDB, updateGameStatus } from "./store/db";
+import { saveMoveToDB, updateGameStatus } from "./store/db";
 import { GameManager } from "./GameManager";
 
 export class Game {
@@ -55,10 +54,10 @@ export class Game {
     }
    async makeMove(user: User, move: Move){
         // validate the turn
-        if(this.board.turn() !== user.color){
+        if(this.board.turn().toUpperCase() !== user.color?.charAt(0)){
             return;
         }
-        // validate the move
+        // validate the moves
         try{
             this.board.move({
                 from: move.from,
@@ -79,7 +78,6 @@ export class Game {
             type: MOVE,
             payload: move
         }))
-        
         saveMoveToDB(this.id, move.from, move.to);
 
         if(this.board.isGameOver()){
@@ -92,7 +90,7 @@ export class Game {
     async endGame(user: User, by: string){
         let playerColor = ""
         if(by === RESIGN){
-            playerColor =  user.color === "w" ? BLACK : WHITE;
+            playerColor =  user.color === WHITE ? BLACK : WHITE;
         }else{
             playerColor = this.board.turn() == 'w' ? BLACK : WHITE
         }
@@ -109,9 +107,8 @@ export class Game {
             }
         }))
         const result = this.board.isDraw() ? "DRAW" : playerColor;
-        const gm = await GameManager.getInstance()
-        gm.removeGame(this.player1.gameId)
         updateGameStatus(this.id, this.board.fen(), "ENDED", result)
+
         return
     }
 
