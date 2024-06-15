@@ -18,5 +18,8 @@
     "chess.js": "^1.0.0-beta.8",
     "crypto": "^1.0.1",
     "ws": "^8.16.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.10"
   }
 }

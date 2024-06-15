@@ -3,7 +3,7 @@ FROM node:lts AS builder
 WORKDIR /app
 RUN npm install -g turbo
 COPY . .
-RUN turbo prune --scope=@chess/ws --docker
+RUN turbo prune --scope=frontend --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:lts AS installer
@@ -18,19 +18,18 @@ RUN npm install
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
-RUN npx turbo run build --filter=@chess/ws...
+RUN npx turbo run build --filter=frontend...
 
 FROM node:lts AS runner
 WORKDIR /app
 
 # # Don't run production as root
-RUN addgroup --system --gid 1001 ws
-RUN adduser --system --uid 1001 ws
-USER ws
+RUN addgroup --system --gid 1001 frontend
+RUN adduser --system --uid 1001 frontend
+USER frontend
 COPY --from=installer /app .
 
-WORKDIR /app/apps/ws
-RUN npx prisma generate
+WORKDIR /app/apps/frontend
 
-EXPOSE 8080
-CMD [ "npm", "start" ]
+EXPOSE 5173
+CMD [ "npm", "preview" ]

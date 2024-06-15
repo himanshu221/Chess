@@ -1,7 +1,5 @@
-import { UUID } from "crypto";
 import { Chess } from "chess.js"
 import { WebSocket as wss } from "ws";
-import { BoardOrientation } from "react-chessboard/dist/chessboard/types"
 
 export interface MessageType {
     type: string,
