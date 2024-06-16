@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  backend:
+    container_name: chess-be
+    build:
+      context: .
+      dockerfile: ./apps/backend/Dockerfile
+    restart: always
+    ports:
+      - 3000
+    env_file:
+      - ./apps/backend/.env
+  ws:
+    container_name: chess-ws
+    build:
+      context: .
+      dockerfile: ./apps/ws/Dockerfile
+    restart: always
+    ports:
+      - 8080
+    env_file:
+      - ./apps/ws/.env
+  frontend:
+    container_name: chess-fe
+    build:
+      context: .
+      dockerfile: ./apps/frontend/Dockerfile
+    restart: always
+    ports:
+      - 5173:5173

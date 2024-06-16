@@ -27,9 +27,9 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 frontend
 RUN adduser --system --uid 1001 frontend
 USER frontend
-COPY --from=installer /app .
+COPY --from=installer --chown=frontend:frontend /app .
 
 WORKDIR /app/apps/frontend
 
 EXPOSE 5173
-CMD [ "npm", "preview" ]
+CMD [ "npm", "run", "preview" ]
