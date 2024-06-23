@@ -34,10 +34,10 @@ router.get('/refresh', async (req, resp) => {
                     name: userDb.username
                 }, jwtSecret)
 
-                resp.cookie('token', token)
                 const userResp : {success: boolean, payload: AuthUser} = {
                     success: true,
                     payload: {
+                        token: token,
                         id: userDb.id,
                         name: userDb.username
                     }
@@ -61,12 +61,6 @@ router.get('/refresh', async (req, resp) => {
             })
         }
 
-        return resp.status(401).json({
-            success: false,
-            payload: {
-                message: "User not found in database"
-            }
-        })
     }
     return resp.status(401).json({
         success: false,

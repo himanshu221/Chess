@@ -9,8 +9,8 @@ export const useSocket = () => {
         if(!user || user.state === "loading"){
             return
         }
-
-        const ws = new  WebSocket(WS_URL);
+        
+        const ws = new  WebSocket(`${WS_URL}?token=${user.getValue()?.payload.token}`);
 
         ws.onopen = () => {
             setSocket(ws)

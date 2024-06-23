@@ -1,4 +1,4 @@
-FROM node:alpine3.16 AS builder
+FROM node:18-alpine3.17 AS builder
 # Set working directory
 
 WORKDIR /app
@@ -7,7 +7,7 @@ COPY . .
 RUN turbo prune --scope=@chess/backend --docker
 
 # Add lockfile and package.json's of isolated subworkspace
-FROM node:alpine3.16 AS installer
+FROM node:18-alpine3.17 AS installer
 
 WORKDIR /app
 
@@ -21,17 +21,16 @@ RUN npm install
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
-RUN npx prisma generate
 RUN npx turbo run build --filter=@chess/backend...
 
-FROM node:alpine3.16 AS runner
+FROM node:18-alpine3.17 AS runner
 
 WORKDIR /app
 
 # # Don't run production as root
-RUN addgroup --system --gid 1001 backend
-RUN adduser --system --uid 1001 backend
-USER backend
+# RUN addgroup --system --gid 1001 backend
+# RUN adduser --system --uid 1001 backend
+# USER backend
 COPY --from=installer /app .
 
 WORKDIR /app/apps/backend

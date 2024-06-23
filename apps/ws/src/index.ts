@@ -1,10 +1,10 @@
 import { WebSocketServer } from 'ws';
 import { GameManager } from './GameManager';
-import cookie from 'cookie'
 import { AuthUser } from '@chess/commons/definition';
 import jwt from 'jsonwebtoken'
 import dotEnv from 'dotenv'
 import { ACTIVE } from '@chess/commons/consts';
+import url from 'url';
 
 dotEnv.config()
 const jwtSecret = process.env.JWT_SECRET || 'secret'
@@ -14,9 +14,7 @@ async function main() {
         const gameManager = await GameManager.getInstance()
 
         wss.on('connection', async function connection(ws, req) {
-
-                const parsedCookies =  cookie.parse(req.headers.cookie || '')
-                const token = parsedCookies['token'] || ''
+                const token: string = url.parse(req.url || '', true).query.token as string;
                 const user = jwt.verify(token, jwtSecret) as AuthUser
                 const activeGame = await gameManager.addUser(ws, user)
 

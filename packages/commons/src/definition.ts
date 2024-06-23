@@ -36,6 +36,7 @@ export interface UserSession {
 export interface AuthUser{
     id: string,
     name: string
+    token: string
 }
 
 export interface User{
@@ -49,6 +50,7 @@ export interface User{
 export interface UserInfo{
     success: boolean,
     payload: {
+        token?: string,
         id?: string,
         name?: string,
         message?: string

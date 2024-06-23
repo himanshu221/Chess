@@ -1,17 +1,20 @@
-version: "3"
+version: "3.9"
 
 services:
   backend:
+    # platform: linux/amd64 
     container_name: chess-be
     build:
       context: .
       dockerfile: ./apps/backend/Dockerfile
+
     restart: always
     ports:
       - 3000
     env_file:
       - ./apps/backend/.env
   ws:
+    # platform: linux/amd64 
     container_name: chess-ws
     build:
       context: .

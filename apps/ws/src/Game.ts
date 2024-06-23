@@ -3,7 +3,6 @@ import { User } from '@chess/commons/definition'
 import { BLACK, CHECKMATE, GAME_OVER, INVALID_MOVE, MOVE, RESIGN, STARTED, WHITE} from "@chess/commons/consts"
 import { Move } from '@chess/commons/definition'
 import { saveMoveToDB, updateGameStatus } from "./store/db";
-import { GameManager } from "./GameManager";
 
 export class Game {
     id: string
