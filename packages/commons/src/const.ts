@@ -12,3 +12,4 @@ export const IN_PROGRESS = "IN_PROGRESS"
 export const BACKEND_URL = "http://localhost:3000"
 export const FRONTEND_URL = "http://localhost:5173"
 export const INITAL_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+export const GAME_TIME_MS = 1000*60*10

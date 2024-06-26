@@ -14,6 +14,7 @@ import CaptureSound from "/capture.mp3"
 import CheckSound  from "/move-check.mp3"
 import StartSound from "/start.mp3"
 import { GameEndModal } from "../components/GameEndModal"
+import Timer from "../components/Timer"
 
 export const Game = () => {
     const navigate = useNavigate()
@@ -36,6 +37,8 @@ export const Game = () => {
     const [showEndGameModal, setShowEndGameModal] = useState<boolean>(false)
     const [gameEndMessage, setGameEndMessage] = useState<string>("")
     const [showResignOpt, setShowResignOpt] = useState<boolean>(false)
+    const [whiteTimeConsumed, setWhiteTimeConsumed] = useState<number>(0)
+    const [blackTimeConsumed, setBlackTimeConsumed] = useState<number>(0)
 
     function startGameHandler() {
         if(socket){
@@ -51,7 +54,6 @@ export const Game = () => {
             type: RESIGN
         }))
     }
-
     useEffect(() => {
         if(!user || user.state === 'hasError' || (user.state !== 'loading' && !user.getValue()?.success)){
             navigate('/login')
@@ -109,6 +111,8 @@ export const Game = () => {
                             moveAudio.play()
                         }
                         moves.push(message.payload.to)
+                        setBlackTimeConsumed(message.payload.blackTimeConsumed)
+                        setWhiteTimeConsumed(message.payload.whiteTimeConsumed)
                         setMoves(moves)
                         setBoard(game.fen())
                         setGame(game)
@@ -146,6 +150,7 @@ export const Game = () => {
                             {opponentName}
                         </div>
                     </div>
+                    {startGame && <Timer timePassed={playerColor === WHITE ? blackTimeConsumed : whiteTimeConsumed} />}
                 </div>
                 <div className="w-[100%] h-[100%] flex justify-center items-center">
                     <ChessBoard socket={socket} moves={moves} setMoves={setMoves} gameStart={startGame} game={game} setBoard={setBoard} setGame={setGame} board={board} playerColor={playerColor} />
@@ -181,6 +186,7 @@ export const Game = () => {
                             </Button>}
                         </div>
                     </div>
+                    {startGame && <Timer timePassed={playerColor === WHITE ? whiteTimeConsumed : blackTimeConsumed} />}
                 </div>
             </div>
             {startButtonClicked ? <MoveTable moves={moves} /> : 

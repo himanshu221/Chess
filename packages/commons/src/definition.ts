@@ -7,9 +7,11 @@ export interface MessageType {
 }
 
 export interface Move {
-    from: string
-    to: string
+    from: string,
+    to: string,
     color: string,
+    whiteTimeConsumed: number,
+    blackTimeConsumed: number,
     message: string,
     gameId: string,
     opponentName: string,

@@ -7,16 +7,22 @@ import { saveMoveToDB, updateGameStatus } from "./store/db";
 export class Game {
     id: string
     player1: User;
+    player1TimeConsumed: number
     player2: User;
+    player2TimeConsumed: number
     board: Chess
     startTime: Date
+    lastMoveTime: Date
 
     constructor(id: string, player1: User, player2: User, fen: string){
         this.id = id
         this.player1 = player1
+        this.player1TimeConsumed = 0
+        this.player2TimeConsumed = 0
         this.player2 = player2
         this.board = new Chess(fen)
         this.startTime  = new Date()
+        this.lastMoveTime = new Date()
         
         if(player1.socket){
             player1.socket.send(JSON.stringify({
@@ -72,12 +78,23 @@ export class Game {
         }
 
         const opponent = this.getOpponent(user)
+        const moveTimestamp = new Date()
 
+        if(this.board.turn() === 'w'){
+            this.player2TimeConsumed = this.player2TimeConsumed + (moveTimestamp.getTime() - this.lastMoveTime.getTime())
+        }else{
+            this.player1TimeConsumed = this.player1TimeConsumed + (moveTimestamp.getTime() - this.lastMoveTime.getTime())
+        }
+        
+        move.whiteTimeConsumed = this.player1TimeConsumed
+        move.blackTimeConsumed = this.player2TimeConsumed
+        
         opponent.socket?.send(JSON.stringify({
             type: MOVE,
             payload: move
         }))
-        saveMoveToDB(this.id, move.from, move.to);
+        this.lastMoveTime = moveTimestamp
+        saveMoveToDB(this.id, move.from, move.to, moveTimestamp);
 
         if(this.board.isGameOver()){
             this.endGame(user, CHECKMATE)

@@ -44,7 +44,7 @@ export async function saveGameToDB(
  * @param from - The starting position of the move.
  * @param to - The ending position of the move.
  */
-export async function saveMoveToDB(gameId: string, from: string, to: string) {
+export async function saveMoveToDB(gameId: string, from: string, to: string, moveTimestamp: Date) {
         try{
             await prisma.move.create({
                 data: {
@@ -55,7 +55,8 @@ export async function saveMoveToDB(gameId: string, from: string, to: string) {
                         
                     },
                     to,
-                    from
+                    from,
+                    createdAt: moveTimestamp
                 }
             })
         }catch(e){
