@@ -61,6 +61,19 @@ export const Game = () => {
     },[user])
 
     useEffect(() => {
+        if (startGame) {
+          const interval = setInterval(() => {
+            if (game.turn() === 'w') {
+              setWhiteTimeConsumed((p) => p + 100);
+            } else {
+              setBlackTimeConsumed((p) => p + 100);
+            }
+          }, 100);
+          return () => clearInterval(interval);
+        }
+      }, [startGame, whiteTimeConsumed, blackTimeConsumed]);
+
+    useEffect(() => {
         if(!socket)
             return
         socket.onmessage = (event) => {
@@ -74,6 +87,8 @@ export const Game = () => {
                         message.payload.moves.forEach(move => moves.push(move))
                         setMoves(moves)
                         setStartButtonClicked(true)
+                        setBlackTimeConsumed(message.payload.blackTimeConsumed)
+                        setWhiteTimeConsumed(message.payload.whiteTimeConsumed)
                         setOpponentName(message.payload.opponentName)
                         setBoard(message.payload.boardFen)
                         game.load(message.payload.boardFen)

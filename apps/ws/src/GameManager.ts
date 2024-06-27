@@ -63,11 +63,21 @@ export class GameManager {
                     
                     const opponentName = activeGameInfo.whitePlayer.id === newUser.id ? activeGameInfo.blackPlayer.username : activeGameInfo.whitePlayer.username
                     const userColor = activeGameInfo.whitePlayer.id === newUser.id ? WHITE : BLACK;
+                    const moveTimestamp = new Date()
+                    let whiteTime = game.player1TimeConsumed;
+                    let blackTime = game.player2TimeConsumed;
+                    if(game.board.turn() === 'b'){
+                        blackTime = game.player2TimeConsumed + (moveTimestamp.getTime() - game.lastMoveTime.getTime())
+                    }else{
+                        whiteTime = game.player1TimeConsumed + (moveTimestamp.getTime() - game.lastMoveTime.getTime())
+                    }
                     return {
                         id: activeGameInfo.id,
                         opponentName,
                         state: activeGameInfo.currentState,
                         userColor,
+                        whiteTimeConsumed: whiteTime,
+                        blackTimeConsumed: blackTime,
                         moves: activeGameInfo.moves.map(moves => moves.to)
                     }
                 }
@@ -119,6 +129,8 @@ export class GameManager {
                         opponentName,
                         state: activeGameInfo.currentState,
                         userColor,
+                        whiteTimeConsumed: game.player1TimeConsumed,
+                        blackTimeConsumed: game.player2TimeConsumed,
                         moves: activeGameInfo.moves.map(moves => moves.to)
                     }
                 }
@@ -168,7 +180,7 @@ export class GameManager {
                 else if(message.type === RESIGN){
                     const game = this.games.find(game => game.id === user.gameId)
                     if(game){
-                        game.endGame(user, RESIGN)
+                        game.endGame(user, RESIGN, 0, 0, new Date())
                     }
                 }
             }

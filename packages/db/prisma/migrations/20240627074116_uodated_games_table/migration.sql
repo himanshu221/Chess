@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "game" ADD COLUMN     "blackPlayerTimeConsumed" INTEGER NOT NULL DEFAULT 0,
+ADD COLUMN     "lastMoveTime" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ADD COLUMN     "whitePlayerTimeConsumed" INTEGER NOT NULL DEFAULT 0;

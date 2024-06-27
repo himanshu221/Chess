@@ -25,7 +25,9 @@ async function main() {
                                         opponentName: activeGame.opponentName,
                                         boardFen: activeGame.state,
                                         color: activeGame.userColor,
-                                        moves: activeGame.moves
+                                        moves: activeGame.moves,
+                                        whiteTimeConsumed: activeGame.whiteTimeConsumed,
+                                        blackTimeConsumed: activeGame.blackTimeConsumed
                                 }}))
                 }else{
                         ws.send(JSON.stringify({type: ACTIVE}))

@@ -72,7 +72,8 @@ export async function saveMoveToDB(gameId: string, from: string, to: string, mov
  * @param result - The new result of the game.
  * @returns A Promise that resolves when the game status has been updated.
  */
-export async function updateGameStatus(gameId: string, currentState: string, status: any, result: any){
+export async function updateGameStatus(gameId: string, currentState: string, status: any, result: any,
+    whiteTimeConsumed: number, blackTimeConsumed: number, lastMoveTime: Date){
     if(status === "IN_PROGRESS"){
         try{
             await prisma.game.update({
@@ -81,7 +82,10 @@ export async function updateGameStatus(gameId: string, currentState: string, sta
                 },
                 data:{
                     status: status,
-                    currentState: currentState
+                    currentState: currentState,
+                    whitePlayerTimeConsumed: whiteTimeConsumed,
+                    blackPlayerTimeConsumed: blackTimeConsumed,
+                    lastMoveTime
                 }
             })
         }catch(e){
@@ -136,7 +140,9 @@ export async function searchActiveGame(userId: string){
                         to: true
                     }
                 },
-                currentState: true
+                currentState: true,
+                whitePlayerTimeConsumed: true,
+                blackPlayerTimeConsumed: true
             }
         })
 
@@ -162,7 +168,8 @@ export async function loadStateFromDb(){
         const player2: User = {
             id: game.blackPlayerId
         }
-        const gm = new Game(game.id, player1, player2, game.currentState)
+        const gm = new Game(game.id, player1, player2, game.currentState, game.createdAt, game.whitePlayerTimeConsumed,
+            game.blackPlayerTimeConsumed, game.lastMoveTime)
         return gm
     })
 

@@ -1,6 +1,6 @@
 import {Chess } from "chess.js";
 import { User } from '@chess/commons/definition'
-import { BLACK, CHECKMATE, GAME_OVER, INVALID_MOVE, MOVE, RESIGN, STARTED, WHITE} from "@chess/commons/consts"
+import { BLACK, CHECKMATE, GAME_OVER, INVALID_MOVE, IN_PROGRESS, MOVE, RESIGN, STARTED, WHITE} from "@chess/commons/consts"
 import { Move } from '@chess/commons/definition'
 import { saveMoveToDB, updateGameStatus } from "./store/db";
 
@@ -14,15 +14,16 @@ export class Game {
     startTime: Date
     lastMoveTime: Date
 
-    constructor(id: string, player1: User, player2: User, fen: string){
+    constructor(id: string, player1: User, player2: User, fen: string, startTime: Date = new Date(),
+        player1TimeConsumed: number = 0, player2TimeConsumed: number = 0, lastMoveTime: Date = new Date()){
         this.id = id
         this.player1 = player1
-        this.player1TimeConsumed = 0
-        this.player2TimeConsumed = 0
+        this.player1TimeConsumed = player1TimeConsumed
+        this.player2TimeConsumed = player2TimeConsumed
         this.player2 = player2
         this.board = new Chess(fen)
-        this.startTime  = new Date()
-        this.lastMoveTime = new Date()
+        this.startTime  = startTime
+        this.lastMoveTime = lastMoveTime
         
         if(player1.socket){
             player1.socket.send(JSON.stringify({
@@ -97,13 +98,14 @@ export class Game {
         saveMoveToDB(this.id, move.from, move.to, moveTimestamp);
 
         if(this.board.isGameOver()){
-            this.endGame(user, CHECKMATE)
+            this.endGame(user, CHECKMATE, this.player1TimeConsumed, this. player2TimeConsumed, moveTimestamp)
         }else{
-            updateGameStatus(this.id, this.board.fen(), "IN_PROGRESS","")
+            updateGameStatus(this.id, this.board.fen(), IN_PROGRESS, "",
+            this.player1TimeConsumed, this. player2TimeConsumed, moveTimestamp)
         }
     }
 
-    async endGame(user: User, by: string){
+    async endGame(user: User, by: string, whiteTimeConsumed: number, blackTimeConsumed: number, lastMoveTime: Date){
         let playerColor = ""
         if(by === RESIGN){
             playerColor =  user.color === WHITE ? BLACK : WHITE;
@@ -123,7 +125,7 @@ export class Game {
             }
         }))
         const result = this.board.isDraw() ? "DRAW" : playerColor;
-        updateGameStatus(this.id, this.board.fen(), "ENDED", result)
+        updateGameStatus(this.id, this.board.fen(), "ENDED", result, whiteTimeConsumed, blackTimeConsumed, lastMoveTime)
 
         return
     }

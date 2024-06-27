@@ -25,15 +25,18 @@ model user {
 }
 
 model game {
-  id            String @id @default(uuid())
-  whitePlayer   user @relation(name: "whiteRel", fields: [whitePlayerId], references: [id])
-  blackPlayer   user @relation(name: "blackRel", fields: [blackPlayerId], references: [id])
-  whitePlayerId String
-  blackPlayerId String
-  status        GameStatus @default(IN_PROGRESS)
-  result        GameResult?
-  currentState  String @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-  createdAt     DateTime @default(now())
+  id                      String @id @default(uuid())
+  whitePlayer             user @relation(name: "whiteRel", fields: [whitePlayerId], references: [id])
+  blackPlayer             user @relation(name: "blackRel", fields: [blackPlayerId], references: [id])
+  whitePlayerId           String
+  blackPlayerId           String
+  status                  GameStatus @default(IN_PROGRESS)
+  result                  GameResult?
+  currentState            String @default("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+  createdAt               DateTime @default(now())
+  whitePlayerTimeConsumed Int @default(0)
+  blackPlayerTimeConsumed Int @default(0)
+  lastMoveTime            DateTime @default(now())
   endedAt       DateTime?
   moves         move[]
 }
