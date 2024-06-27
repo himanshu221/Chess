@@ -13,6 +13,7 @@ import MoveSound from "/move-self.mp3"
 import CaptureSound from "/capture.mp3"
 import CheckSound  from "/move-check.mp3"
 import StartSound from "/start.mp3"
+import GameEndSound from "/game-end.webm"
 import { GameEndModal } from "../components/GameEndModal"
 import Timer from "../components/Timer"
 
@@ -25,6 +26,7 @@ export const Game = () => {
     const captureAudio = new Audio(CaptureSound);
     const checkAudio = new Audio(CheckSound)
     const startAudio = new Audio(StartSound)
+    const gameEndAudio = new Audio(GameEndSound)
 
     const [startButtonClicked, setStartButtonClicked] = useState<boolean>(false)
     const [opponentName, setOpponentName] = useState<string>("")
@@ -136,6 +138,7 @@ export const Game = () => {
                 case GAME_OVER:
                     if(message.payload){
                         setGameEndMessage(message.payload.message)
+                        gameEndAudio.play()
                         setShowEndGameModal(true)
                     }
                     break;
