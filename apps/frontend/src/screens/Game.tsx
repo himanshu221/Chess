@@ -16,6 +16,8 @@ import StartSound from "/start.mp3"
 import GameEndSound from "/game-end.webm"
 import { GameEndModal } from "../components/GameEndModal"
 import Timer from "../components/Timer"
+import Confetti from 'react-confetti';
+import { Conf } from "../components/Confetti"
 
 export const Game = () => {
     const navigate = useNavigate()
@@ -41,6 +43,7 @@ export const Game = () => {
     const [showResignOpt, setShowResignOpt] = useState<boolean>(false)
     const [whiteTimeConsumed, setWhiteTimeConsumed] = useState<number>(0)
     const [blackTimeConsumed, setBlackTimeConsumed] = useState<number>(0)
+    const [winnerColor, setWinnerColor] = useState<string>(WHITE)
 
     function startGameHandler() {
         if(socket){
@@ -66,11 +69,11 @@ export const Game = () => {
         if (startGame) {
           const interval = setInterval(() => {
             if (game.turn() === 'w') {
-              setWhiteTimeConsumed((p) => p + 100);
+              setWhiteTimeConsumed((p) => p + 500);
             } else {
-              setBlackTimeConsumed((p) => p + 100);
+              setBlackTimeConsumed((p) => p + 500);
             }
-          }, 100);
+          }, 500);
           return () => clearInterval(interval);
         }
       }, [startGame, whiteTimeConsumed, blackTimeConsumed]);
@@ -138,6 +141,7 @@ export const Game = () => {
                 case GAME_OVER:
                     if(message.payload){
                         setGameEndMessage(message.payload.message)
+                        setWinnerColor(message.payload.color)
                         gameEndAudio.play()
                         setShowEndGameModal(true)
                     }
@@ -215,8 +219,8 @@ export const Game = () => {
                 </div>
             }
         </div>
-    {
-        showEndGameModal && <GameEndModal message={gameEndMessage} buttonText="New Game" setEndGameModal={setShowEndGameModal} />
-    }
+    { showEndGameModal && <GameEndModal message={gameEndMessage} buttonText="New Game" setEndGameModal={setShowEndGameModal} />}
+    { showEndGameModal && playerColor === winnerColor && <Conf />}
     </div>
+    
 }

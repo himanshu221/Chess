@@ -1,6 +1,6 @@
 import {Chess } from "chess.js";
 import { User } from '@chess/commons/definition'
-import { BLACK, CHECKMATE, GAME_OVER, INVALID_MOVE, IN_PROGRESS, MOVE, RESIGN, STARTED, WHITE} from "@chess/commons/consts"
+import { BLACK, CHECKMATE, GAME_OVER, GAME_TIME_MS, INVALID_MOVE, IN_PROGRESS, MOVE, RESIGN, STARTED, TIMEOUT, WHITE} from "@chess/commons/consts"
 import { Move } from '@chess/commons/definition'
 import { saveMoveToDB, updateGameStatus } from "./store/db";
 
@@ -11,6 +11,7 @@ export class Game {
     player2: User;
     player2TimeConsumed: number
     board: Chess
+    gameEndTimer: NodeJS.Timeout | null
     startTime: Date
     lastMoveTime: Date
 
@@ -24,6 +25,8 @@ export class Game {
         this.board = new Chess(fen)
         this.startTime  = startTime
         this.lastMoveTime = lastMoveTime
+        this.gameEndTimer = null
+        this.setEndGameTimer()
         
         if(player1.socket){
             player1.socket.send(JSON.stringify({
@@ -58,6 +61,24 @@ export class Game {
             return this.player1
         else return this.player2
     }
+
+    async setEndGameTimer() {
+        if(this.gameEndTimer){
+            clearTimeout(this.gameEndTimer)
+        }
+
+        let timeLeft = 0;
+        if(this.board.turn() === 'w'){
+            timeLeft = GAME_TIME_MS - this.player1TimeConsumed
+        }else{
+            timeLeft = GAME_TIME_MS - this.player2TimeConsumed
+        }
+
+        this.gameEndTimer = setTimeout(() => {
+            this.endGame(this.board.turn() === 'w' ? this.player1 : this.player2, TIMEOUT)
+        },timeLeft)
+
+    }
    async makeMove(user: User, move: Move){
         // validate the turn
         if(this.board.turn().toUpperCase() !== user.color?.charAt(0)){
@@ -77,7 +98,7 @@ export class Game {
             }))
             return
         }
-
+        this.setEndGameTimer()
         const opponent = this.getOpponent(user)
         const moveTimestamp = new Date()
 
@@ -98,14 +119,14 @@ export class Game {
         saveMoveToDB(this.id, move.from, move.to, moveTimestamp);
 
         if(this.board.isGameOver()){
-            this.endGame(user, CHECKMATE, this.player1TimeConsumed, this. player2TimeConsumed, moveTimestamp)
+            this.endGame(user, CHECKMATE)
         }else{
             updateGameStatus(this.id, this.board.fen(), IN_PROGRESS, "",
             this.player1TimeConsumed, this. player2TimeConsumed, moveTimestamp)
         }
     }
 
-    async endGame(user: User, by: string, whiteTimeConsumed: number, blackTimeConsumed: number, lastMoveTime: Date){
+    async endGame(user: User, by: string){
         let playerColor = ""
         if(by === RESIGN){
             playerColor =  user.color === WHITE ? BLACK : WHITE;
@@ -115,17 +136,19 @@ export class Game {
         this.player1.socket?.send(JSON.stringify({
             type: GAME_OVER,
             payload: {
-                message: `${playerColor} won by ${by}` 
+                message: `${playerColor} won by ${by}`,
+                color: playerColor
             }
         })) 
         this.player2.socket?.send(JSON.stringify({
             type: GAME_OVER,
             payload: {
-                message: `${playerColor} won by ${by}` 
+                message: `${playerColor} won by ${by}`,
+                color: playerColor
             }
         }))
         const result = this.board.isDraw() ? "DRAW" : playerColor;
-        updateGameStatus(this.id, this.board.fen(), "ENDED", result, whiteTimeConsumed, blackTimeConsumed, lastMoveTime)
+        updateGameStatus(this.id, this.board.fen(), "ENDED", result, this.player1TimeConsumed, this.player2TimeConsumed, this.lastMoveTime)
 
         return
     }

@@ -12,7 +12,7 @@ const Timer = ({timePassed}: {timePassed: number}) => {
 
     },[timePassed])
 
-    return <div className="p-2 bg-black rounded-lg bg-opacity-30">
+    return <div className="p-2 w-16 bg-black rounded-lg bg-opacity-30">
         {minutes < 10 ? '0' : ''}{minutes}:{seconds < 10 ? '0': ''}{seconds}
     </div>
 }

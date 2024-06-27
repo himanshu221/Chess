@@ -180,7 +180,7 @@ export class GameManager {
                 else if(message.type === RESIGN){
                     const game = this.games.find(game => game.id === user.gameId)
                     if(game){
-                        game.endGame(user, RESIGN, 0, 0, new Date())
+                        game.endGame(user, RESIGN)
                     }
                 }
             }
