@@ -16,27 +16,32 @@ Following features are support:
 ![Architecture](Chess-arch.png)
 
 1. Client go to `chess.himanshubhushan.com`.
+2. CDN Network fetches the static asset files for the first request from the object store
+3. CDN pop will cache the files for further request improving the response time.
+4. 
 
 
 ## Tech Stack
 
 Let's keep it simple
 
-React for Frontend
-Node.js for Backend
-Typescript as the language
-Websocket server for handling real time games
+- React for Frontend
+- Node.js for Backend
+- Typescript as the language
+- Websocket server for handling real time games
 
 ## Modules
 
 The monorepo contains following apps :
 - Websocket backend using ws library for handling game logic
-- Express backend to authenicate with google auth2 using passport library
+- Express backend to authenicate with google OAuth2.0 using passportjs library
 - React frontend 
 
 ## Setting it up locally
 1. Clone the repo
-2. npm i
-3. npm run dev ( turbo will build all modules )
-
-## [Demo link](https://x.com/himcarnation/status/1784149274462491111?s=46&t=Q_fESzJvSFTSKxBLp87n4Q)
+2. Run `npm i`
+3. Add `.env` files in backend, ws and packages/db from `.env.example` file.
+4. Run `cd packages/db`.
+5, Run `npx prisma migrate dev`.
+5, Run `npx prisma generate`.
+4. npm run dev ( turbo will build all modules )
