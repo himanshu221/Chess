@@ -16,7 +16,7 @@ Following features are support:
 ![Architecture](Chess-arch.png)
 
 1. Client go to `chess.himanshubhushan.com`.
-2. CDN Network fetches the static asset files for the first request from the object store
+2. CDN Network fetches the static asset files for the first request from the object store.
 3. CDN pop will cache the files for further request improving the response time.
 4. 
 
@@ -29,6 +29,11 @@ Let's keep it simple
 - Node.js for Backend
 - Typescript as the language
 - Websocket server for handling real time games
+
+## Deployment
+
+- React frontend is deployed on Cloudfront distribution (CDN Network) with asset files for app frontend placed in AWS S3 bucket (Object Store).
+- Backend and websocket is deployed on an AWS EC2 server running on port 3000 and 3001 respectively and all request are routed to these services through an nginx reverse proxy server listening on default https port 443.
 
 ## Modules
 
