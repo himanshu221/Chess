@@ -42,6 +42,6 @@ The monorepo contains following apps :
 2. Run `npm i`
 3. Add `.env` files in backend, ws and packages/db from `.env.example` file.
 4. Run `cd packages/db`.
-5, Run `npx prisma migrate dev`.
-5, Run `npx prisma generate`.
-4. npm run dev ( turbo will build all modules )
+5. Run `npx prisma migrate dev`.
+6. Run `npx prisma generate`.
+7. npm run dev ( turbo will build all modules )
