@@ -16,7 +16,6 @@ import StartSound from "/start.mp3"
 import GameEndSound from "/game-end.webm"
 import { GameEndModal } from "../components/GameEndModal"
 import Timer from "../components/Timer"
-import Confetti from 'react-confetti';
 import { Conf } from "../components/Confetti"
 
 export const Game = () => {
