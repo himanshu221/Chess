@@ -2,7 +2,7 @@
 
 Live: [chess.himanshubhushan.com](https://chess.himanshubhushan.com)
 
-This is a multiplayer chess platform like `chess.com` where players can join, login with their google account and play chess.
+This is a monorepo for a multiplayer chess platform like `chess.com` where players can join, login with their google account and play chess.
 
 Following features are support:
 - Players can login with Google Account.
