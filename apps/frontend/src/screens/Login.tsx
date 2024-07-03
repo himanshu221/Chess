@@ -9,7 +9,7 @@ export const Login = () => {
     }
 
     return <div className="h-screen bg-cover bg-chessboard flex justify-center items-center">
-        <div className="h-auto h-min-72 w-[70vw] px-10 py-16 backdrop-saturate-200 md:w-[60vw] rounded-lg backdrop-blur-sm bg-[#18120ebf] text-center">
+        <div className="h-auto h-min-72 w-[70vw] px-10 py-16 backdrop-saturate-200 md:w-[60vw] rounded-lg backdrop-blur-sm bg-[#18120ebf] text-center flex items-center flex-col">
             <div className="text-5xl text-white font-bold flex items-center justify-center">
                 Play Chess Online on the #1 Site!
             </div>

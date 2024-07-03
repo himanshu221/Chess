@@ -167,7 +167,7 @@ export const Game = () => {
                         {startButtonClicked && <div className="w-10">
                                 <img src="/user-image.svg" alt="" />
                             </div>}
-                        <div>
+                        <div className="text-sm md:text-lg">
                             {opponentName}
                         </div>
                     </div>
@@ -181,11 +181,11 @@ export const Game = () => {
                         <div className="w-10">
                             <img src="/user-image.svg" alt="" />
                         </div>
-                        <div>
+                        <div className="text-sm md:text-lg">
                             {user.getValue()?.payload.name}
                         </div>
                         <div className="relative">
-                            {showResignOpt && <div ref={resignPopUpRef} className="absolute bottom-10 w-48 flex flex-col justify-center items-start bg-black bg-opacity-80 p-2 rounded-lg">
+                            {showResignOpt && <div ref={resignPopUpRef} className="absolute z-50 bottom-10 w-48 flex flex-col justify-center items-start bg-black bg-opacity-80 p-2 rounded-lg">
                                 <div className="text-md w-full flex justify-center items-start">
                                     Are you sure ?
                                 </div>
