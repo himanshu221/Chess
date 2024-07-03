@@ -15,12 +15,6 @@ Following features are support:
 
 ![Architecture](Chess-arch.png)
 
-1. Client go to `chess.himanshubhushan.com`.
-2. CDN Network fetches the static asset files for the first request from the object store.
-3. CDN pop will cache the files for further request improving the response time.
-4. 
-
-
 ## Tech Stack
 
 Let's keep it simple
