@@ -44,3 +44,12 @@ The monorepo contains following apps :
 5. Run `npx prisma migrate dev`.
 6. Run `npx prisma generate`.
 7. npm run dev ( turbo will build all modules )
+
+## Future Scope
+
+Currently I have only one websocket server handling all games state and logic. There is a upperlimit (around 20k for micro EC2 server) for how many persistent connections a websocket server can handle, which leads issues on scale
+
+Following solution can be applied for scaling: 
+- **Scaling via sharding**: Deploy a fleet of websocket severs and maintain `sticky connections` i.e. the users which are connected to a game should be connected to the same web socket server. This way we dont need communication between the webdocket servers for sharing the game state.
+- **Scaling via pub-sub system**: Deploy a fleet of websocket servers and allow the users to connect to any websocket server. Maintain a pub-sub where web socket servers which are hosting the game are subscribed for that particular game events. This way whenever there is a move played in the game it is published to the pub-sub and all the intereted websocket servers get the move.
+   
